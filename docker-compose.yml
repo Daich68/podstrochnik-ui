@@ -1,0 +1,27 @@
+version: '2'
+services:
+  pds-ui:
+    restart: always
+    container_name: pds-ui
+    image: pds-ui-image
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3003"
+    mem_limit: 636m
+    networks:
+      - traefik
+      - default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pds-ui.rule=Host(`podstrochnik.ru`)"
+      - "traefik.http.routers.pds-ui.entrypoints=websecure"
+      - "traefik.http.routers.pds-ui.tls.certresolver=myresolver"
+      - "traefik.docker.network=traefik"
+
+networks:
+  default:
+    external: false
+  traefik:
+    external: true
