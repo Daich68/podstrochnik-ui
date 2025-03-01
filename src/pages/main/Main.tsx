@@ -5,7 +5,8 @@ import { Post } from "../../entity/Entity";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "./Main.css"; // Custom styles
+import "./Main.css";
+import {RemoveLinksFromHTML, UpdateFavicon} from "../../utils/Style"; // Custom styles
 
 export const MainPage: React.FC = () => {
     const [posts, setPosts] = useState<Post[]>([]);
@@ -31,23 +32,30 @@ export const MainPage: React.FC = () => {
         autoplaySpeed: 3000,
     };
 
+    UpdateFavicon("#7a7a26")
+
+
     return (
-        <div className="masonry-grid">
-            {posts.map(post => (
-                <Link to={`/post/${post._id}`} key={post._id} className="post-card" style={{ backgroundColor: post.color }}>
-                    <div className="slider-container">
-                        <Slider {...sliderSettings}>
-                            {post.cards.map((url, index) => (
-                                <img key={index} src={url} alt={`Post ${post._id} - Image ${index + 1}`} />
-                            ))}
-                        </Slider>
-                    </div>
-                    <div className="post-info">
-                        <h3 dangerouslySetInnerHTML={{ __html: post.title }} />
-                        <p dangerouslySetInnerHTML={{ __html: post.author_name }} />
-                    </div>
-                </Link>
-            ))}
-        </div>
+        <>
+        <div className={"site-title"}><h1><i>проект подстрочник</i></h1></div>
+            <div className="masonry-grid">
+                {posts.map(post => (
+                    <Link to={`/post/${post._id}`} key={post._id} className="post-card" style={{ backgroundColor: post.color }}>
+                        <div className="slider-container">
+                            <Slider {...sliderSettings}>
+                                {post.cards.map((url, index) => (
+                                    // eslint-disable-next-line
+                                    <img key={index} src={url} alt={`Post ${post._id} - Image ${index + 1}`} />
+                                ))}
+                            </Slider>
+                        </div>
+                        <div className="post-info">
+                            <h3 dangerouslySetInnerHTML={{ __html: RemoveLinksFromHTML(post.title) }} />
+                            <p dangerouslySetInnerHTML={{ __html: RemoveLinksFromHTML(post.author_name) }} />
+                        </div>
+                    </Link>
+                ))}
+            </div>
+        </>
     );
 };

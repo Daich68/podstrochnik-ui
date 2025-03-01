@@ -39,7 +39,8 @@ export const EditAddCore: React.FC<EditAddCoreProps> = ({ publication }) => {
 
     return (
         <>
-            <ImageUploader />
+            <div style={{paddingTop: "5rem"}}></div>
+            <ImageUploader checkSquare={false}/>
             <Formik
                 validationSchema={publicationSchema}
                 initialValues={initialValues}
@@ -62,7 +63,7 @@ export const EditAddCore: React.FC<EditAddCoreProps> = ({ publication }) => {
                         <label htmlFor="author_name">Author Name:</label>
                         <Field name="author_name">
                             {/* @ts-ignore*/}
-                            {({ field, form }) => (
+                            {({field, form}) => (
                                 <ReactQuill
                                     value={field.value}
                                     onChange={(content) => form.setFieldValue("author_name", content)}
@@ -72,15 +73,24 @@ export const EditAddCore: React.FC<EditAddCoreProps> = ({ publication }) => {
                         <ErrorMessage name="author_name" component="div" className="error"/>
                         <p></p>
 
+
                         <label htmlFor="title">Title:</label>
-                        <Field name="title" type="text"/>
+                        <Field name="title">
+                            {/* @ts-ignore*/}
+                            {({field, form}) => (
+                                <ReactQuill
+                                    value={field.value}
+                                    onChange={(content) => form.setFieldValue("title", content)}
+                                />
+                            )}
+                        </Field>
                         <ErrorMessage name="title" component="div" className="error"/>
                         <p></p>
 
                         <label htmlFor="editor_name">Editor Name:</label>
                         <Field name="editor_name">
                             {/* @ts-ignore*/}
-                            {({ field, form }) => (
+                            {({field, form}) => (
                                 <ReactQuill
                                     value={field.value}
                                     onChange={(content) => form.setFieldValue("editor_name", content)}
@@ -93,7 +103,7 @@ export const EditAddCore: React.FC<EditAddCoreProps> = ({ publication }) => {
                         <label htmlFor="helpful_links">Helpful Links:</label>
                         <Field name="helpful_links">
                             {/* @ts-ignore*/}
-                            {({ field, form }) => (
+                            {({field, form}) => (
                                 <ReactQuill
                                     value={field.value}
                                     onChange={(content) => form.setFieldValue("helpful_links", content)}
@@ -106,12 +116,12 @@ export const EditAddCore: React.FC<EditAddCoreProps> = ({ publication }) => {
                         <label htmlFor="color">Color:</label>
                         <Field name="color">
                             {/* @ts-ignore*/}
-                            {({ field, form }) => (
+                            {({field, form}) => (
                                 <input
                                     type="color"
                                     {...field}
                                     onChange={(event) => form.setFieldValue("color", event.target.value)}
-                                    style={{ width: "50px", height: "30px", border: "none" }}
+                                    style={{width: "50px", height: "30px", border: "none"}}
                                 />
                             )}
                         </Field>
@@ -133,7 +143,8 @@ export const EditAddCore: React.FC<EditAddCoreProps> = ({ publication }) => {
                                             <label htmlFor={`cards.${index}`}>Card URL {index + 1}:</label>
                                             <Field name={`cards.${index}`} type="text"/>
                                             <ErrorMessage name={`cards.${index}`} component="div" className="error"/>
-                                            <button type="button" onClick={() => arrayHelpers.remove(index)}>Remove</button>
+                                            <button type="button" onClick={() => arrayHelpers.remove(index)}>Remove
+                                            </button>
                                             <p></p>
                                         </div>
                                     ))}
@@ -142,7 +153,8 @@ export const EditAddCore: React.FC<EditAddCoreProps> = ({ publication }) => {
                             )}
                         />
 
-                        {isSubmitting && <div className="error">Submission failed. Please check the form for errors.</div>}
+                        {isSubmitting &&
+                            <div className="error">Submission failed. Please check the form for errors.</div>}
 
                         {!submitting && <button type="submit">Submit</button>}
                     </Form>

@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import {CdnGetUrl, CdnSaveUrl} from "../../../entity/constants/Urls";
 import {CdnResponse} from "../../../entity/Entity";
 
-const ImageUploader = () => {
+type ImageUploaderProps = {
+    checkSquare: boolean
+}
+const ImageUploader = ({checkSquare}: ImageUploaderProps) => {
     const [image, setImage] = useState<null| File>(null);
     const [errorMessage, setErrorMessage] = useState('');
     const [uploadStatus, setUploadStatus] = useState('Загрузите фото не более 1МB');
@@ -22,12 +25,14 @@ const ImageUploader = () => {
             // Validate if the image is a square
             const imageObject = new Image();
             imageObject.onload = () => {
-                if (imageObject.width !== imageObject.height) {
+                if (checkSquare && (imageObject.width !== imageObject.height)) {
                     setErrorMessage('Error: Image is not square');
-                } else {
-                    setImage(file);
-                    setErrorMessage('');
+                    return
                 }
+
+                setImage(file);
+                setErrorMessage('');
+
             };
             imageObject.onerror = () => {
                 setErrorMessage('Error: Invalid image file');
@@ -77,7 +82,7 @@ const ImageUploader = () => {
     };
 
     return (
-        <div style={{position: "absolute", right: "1rem", top: "8rem"}}>
+        <div>
             <img src={url} style={{width: "100px", height: "100px"}} alt={""}/>
             <form onSubmit={handleUpload}>
                 <input type="file" accept="image/*" onChange={handleImageChange} />

@@ -4,6 +4,7 @@ import { MenuAdmin } from "./MenuAdmin";
 import { GetPostAdmin, DeleteText } from "../../../api/Posts";
 import { Post } from "../../../entity/Entity";
 import "./Admin.css";
+import {GetPrettyTimePub} from "../../../utils/DatetimeUtils";
 
 export const Main: React.FC = () => {
     const [publications, setPublications] = useState<Post[] | null>(null);
@@ -38,10 +39,12 @@ export const Main: React.FC = () => {
             {publications ? (
                 publications.map(pub => (
                     <div key={pub._id} className="publication-item">
-                        <h1>{pub.author_name} {pub.title}</h1>
-                        <p>{pub.time_publication}</p>
+                        <span dangerouslySetInnerHTML={{__html: pub.author_name}}/>
+                        <span dangerouslySetInnerHTML={{__html: pub.title}}/>
+
+                        <p>{GetPrettyTimePub({date:  new Date(pub.time_publication)})}</p>
                         <Link to={`/admin/edit?id=${pub._id}`}>Edit</Link>
-                        { <button onClick={() => handleDelete(pub._id || "")} className="delete-button">
+                        {<button onClick={() => handleDelete(pub._id || "")} className="delete-button">
                             Delete
                         </button>}
                     </div>
