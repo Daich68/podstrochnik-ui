@@ -12,6 +12,7 @@ export const MenuAdmin: React.FC = () => {
                 <Link className={"menu-admin"} to={"/admin/add"}>Новая публикация</Link>
                 <Link className={"menu-admin"} to={"/admin/exit"}>Выход</Link>
             </div>
+            <hr/>
         </div>
     )
 }

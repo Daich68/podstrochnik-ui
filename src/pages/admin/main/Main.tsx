@@ -35,18 +35,19 @@ export const Main: React.FC = () => {
 
     return (
         <div className="admin-ui">
-            <MenuAdmin />
+            <MenuAdmin/>
             {publications ? (
                 publications.map(pub => (
                     <div key={pub._id} className="publication-item">
                         <span dangerouslySetInnerHTML={{__html: pub.author_name}}/>
                         <span dangerouslySetInnerHTML={{__html: pub.title}}/>
 
-                        <p>{GetPrettyTimePub({date:  new Date(pub.time_publication)})}</p>
+                        <p>{GetPrettyTimePub({date: new Date(pub.time_publication)})}</p>
                         <Link to={`/admin/edit?id=${pub._id}`}>Edit</Link>
                         {<button onClick={() => handleDelete(pub._id || "")} className="delete-button">
                             Delete
                         </button>}
+                        <hr/>
                     </div>
                 ))
             ) : (
