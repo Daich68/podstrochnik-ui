@@ -14,6 +14,7 @@ export type Post = {
     _id?: string;
     author_name: string;
     title: string;
+    color: string;
     cards: string[];
     editor_name: string;
     helpful_links: string;

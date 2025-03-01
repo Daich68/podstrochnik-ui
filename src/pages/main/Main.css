@@ -1,0 +1,43 @@
+.masonry-grid {
+    column-count: 4;
+    column-gap: 15px;
+    padding: 20px;
+}
+
+.post-card {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 15px;
+    break-inside: avoid;
+    position: relative;
+    text-decoration: none;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.post-card:hover {
+    transform: scale(1.05);
+}
+
+.slider-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 10px;
+}
+
+.post-info {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.post-card:hover .post-info {
+    opacity: 1;
+}

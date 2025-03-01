@@ -13,6 +13,8 @@
     "react-quill": "^2.0.0",
     "react-router-dom": "^7.2.0",
     "react-scripts": "5.0.1",
+    "react-slick": "^0.30.3",
+    "slick-carousel": "^1.8.1",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4",
     "yup": "^1.6.1"
@@ -53,5 +55,8 @@
   },
   "main": "index.js",
   "author": "Алиев Али <aliev.ali27@wildberies.ru>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/react-slick": "^0.23.13"
+  }
 }

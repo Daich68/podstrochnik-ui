@@ -7,6 +7,7 @@ import {Edit} from "./pages/admin/edit_add/Edit";
 import {Add} from "./pages/admin/edit_add/Add";
 import {Texts} from "./pages/admin/texts/Texts";
 import {MockPage} from "./utils/MockPage";
+import {MainPage} from "./pages/main/Main";
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
             <Route path="/admin/login" element={<Login/>}/>
             <Route path="/admin/texts" element={<Texts/>}/>
             {/*user*/}
-            <Route path="/" element={<MockPage pageName={"glavnaya"}/>}/>
+            <Route path="/" element={<MainPage/>}/>
             <Route path="/search" element={<MockPage pageName={"poiska"}/>}/>
             <Route path="/about" element={<MockPage pageName={"o proekte"}/>}/>
         </Routes>

@@ -6,6 +6,7 @@ export const URLs = {
     AddPosts: BaseUrl + auth + "/posts",
     GetTexts: BaseUrl + "/texts",
     AddTexts: BaseUrl + auth + "/texts",
+    DeletePost: BaseUrl + auth + "/posts",
 };
 
 export const CdnSaveUrl: string = "https://cdn.alialiev.com/images/save"

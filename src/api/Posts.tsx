@@ -1,4 +1,4 @@
-import {editEntity, getEntity, getEntityWithQueryParams} from "../utils/ReqestEntityUtils";
+import {deleteEntity, editEntity, getEntity, getEntityWithQueryParams} from "../utils/ReqestEntityUtils";
 import {Post, TextsData} from "../entity/Entity";
 import {URLs} from "../entity/constants/Urls";
 
@@ -28,4 +28,8 @@ export async function GetTexts(): Promise<TextsData[]> {
 }
 export async function UpdateText(data: TextsData){
     return await editEntity<TextsData>(URLs.AddTexts, data);
+}
+
+export async function DeleteText(id : string){
+    return await deleteEntity(URLs.DeletePost, id);
 }
