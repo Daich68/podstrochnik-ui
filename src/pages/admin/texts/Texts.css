@@ -1,0 +1,20 @@
+.texts-container {
+    margin: 20px;
+    overflow-x: auto; /* Ensures the table is scrollable on smaller screens */
+}
+
+.texts-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.texts-table th,
+.texts-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+.texts-table th {
+    background-color: #f4f4f4;
+}
