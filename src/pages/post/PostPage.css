@@ -1,0 +1,46 @@
+.post-container {
+    text-align: center;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.post-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.post-author {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.post-slider {
+    width: 60%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.post-slide {
+    display: flex;
+    justify-content: center;
+}
+
+.post-image {
+    width: 100%;
+    max-width: 600px;
+    border-radius: 10px;
+}
+
+.post-time {
+    margin-top: 15px;
+    font-size: 16px;
+    color: #777;
+}
+

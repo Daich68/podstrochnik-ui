@@ -8,6 +8,7 @@ import {Add} from "./pages/admin/edit_add/Add";
 import {Texts} from "./pages/admin/texts/Texts";
 import {MockPage} from "./utils/MockPage";
 import {MainPage} from "./pages/main/Main";
+import {PostPage} from "./pages/post/PostPage";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/admin/texts" element={<Texts/>}/>
             {/*user*/}
             <Route path="/" element={<MainPage/>}/>
+            <Route path="/post/:id" element={<PostPage/>}/>
             <Route path="/search" element={<MockPage pageName={"poiska"}/>}/>
             <Route path="/about" element={<MockPage pageName={"o proekte"}/>}/>
         </Routes>
