@@ -25,3 +25,7 @@ export const UpdateFavicon = (color: string) => {
 export const RemoveLinksFromHTML = (html: string): string => {
     return html.replace(/<a\b[^>]*>(.*?)<\/a>/gi, '$1');
 };
+
+export const isMobileDeviceV3 = (minWidth: number): boolean => {
+    return window.innerWidth < minWidth;
+};
