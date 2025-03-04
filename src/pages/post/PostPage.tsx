@@ -38,17 +38,22 @@ export const PostPage: React.FC = () => {
         <div className="post-container" style={{ backgroundColor: post.color }}>
             <div className="top-bar">
                 <div className="back-link"><Link to={"/"}>↩️ на главную</Link></div>
-                <button className="helpful-links-btn" onClick={() => setShowLinks(!showLinks)}>ℹ️ полезные ссылки</button>
-            </div>
-
-            {showLinks ? (
-                <div className="helpful-links-container">
-                    <div className="helpful-links-content">
-                        <InnerDangerous html={post.helpful_links} />
-                    </div>
-                    <h5><InnerDangerous html={post.editor_name} /></h5>
+                    {!showLinks ?
+                        <button className="helpful-links-btn" onClick={() => setShowLinks(!showLinks)}>ℹ️ полезные
+                            ссылки</button>
+                        :
+                        <button className="helpful-links-btn" onClick={() => setShowLinks(!showLinks)}>ℹ️ к карточкам</button>
+                    }
                 </div>
-            ) : (
+
+                {showLinks ? (
+                    <div className="helpful-links-container">
+                    <div className="helpful-links-content">
+                    <InnerDangerous html={post.helpful_links} />
+        </div>
+    <h5><InnerDangerous html={post.editor_name}/></h5>
+</div>
+) : (
                 <>
                     <h1 className="post-title"><InnerDangerous html={post.title} /></h1>
                     <div className="post-author"><InnerDangerous html={post.author_name} /></div>
