@@ -40,7 +40,6 @@ export const EditAddCore: React.FC<EditAddCoreProps> = ({ publication }) => {
     return (
         <>
             <div style={{paddingTop: "5rem"}}></div>
-            <ImageUploader checkSquare={false}/>
             <Formik
                 validationSchema={publicationSchema}
                 initialValues={initialValues}
@@ -160,6 +159,7 @@ export const EditAddCore: React.FC<EditAddCoreProps> = ({ publication }) => {
                     </Form>
                 )}
             </Formik>
+            <ImageUploader checkSquare={false}/>
         </>
     );
 };
