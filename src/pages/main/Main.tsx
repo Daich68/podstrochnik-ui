@@ -6,7 +6,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./Main.css";
-import { RemoveLinksFromHTML, UpdateFavicon } from "../../utils/Style";
+import {RemoveLinksFromHTML, sliderSettingsV2, UpdateFavicon} from "../../utils/Style";
 import lupaIcon from "../../static/lupa.svg";
 import arrowIcon from "../../static/arrow.svg";
 
@@ -54,16 +54,7 @@ export const MainPage: React.FC = () => {
         }
     };
 
-    const sliderSettings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        arrows: false,
-        autoplay: true,
-        autoplaySpeed: 5000,
-    };
+
 
     UpdateFavicon("#7a7a26");
 
@@ -94,7 +85,7 @@ export const MainPage: React.FC = () => {
                     <Link to={`/post/${post._id}`} key={post._id} className="post-card"
                           style={{backgroundColor: post.color}}>
                         <div className="slider-container">
-                            <Slider {...sliderSettings}>
+                            <Slider {...sliderSettingsV2(post.cards.length, false)}>
                             {post.cards.map((url, index) => (
                                     // eslint-disable-next-line
                                     <img key={index} src={url} alt={`Post ${post._id} - Image ${index + 1}`} />

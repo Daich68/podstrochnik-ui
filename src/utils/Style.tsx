@@ -29,3 +29,23 @@ export const RemoveLinksFromHTML = (html: string): string => {
 export const isMobileDeviceV3 = (minWidth: number): boolean => {
     return window.innerWidth < minWidth;
 };
+
+export const sliderSettingsV2 = (length: number, arrows: boolean) => ({
+    dots: length > 1,
+    infinite: length > 1,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: arrows,
+    autoplay: length > 1,
+    autoplaySpeed: 5000,
+});
+
+export const sliderSettingsV2Post = (length: number, arrows: boolean) => ({
+    dots: length>1,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: arrows
+});

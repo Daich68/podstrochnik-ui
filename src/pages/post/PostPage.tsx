@@ -8,7 +8,7 @@ import "slick-carousel/slick/slick-theme.css";
 import "./PostPage.css";
 import { InnerDangerous } from "../../utils/InnerDangerous";
 import { GetPrettyTimePub } from "../../utils/DatetimeUtils";
-import { isMobileDeviceV3, UpdateFavicon } from "../../utils/Style";
+import {isMobileDeviceV3, sliderSettingsV2Post, UpdateFavicon} from "../../utils/Style";
 
 export const PostPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -23,14 +23,6 @@ export const PostPage: React.FC = () => {
 
     if (!post) return <p></p>;
 
-    const sliderSettings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        arrows: !isMobileDeviceV3(700)
-    };
 
     UpdateFavicon(post.color);
 
@@ -58,7 +50,7 @@ export const PostPage: React.FC = () => {
                         <h1 className="post-title"><InnerDangerous html={post.title} /></h1>
                         <div className="post-author"><InnerDangerous html={post.author_name} /></div>
 
-                        <Slider {...sliderSettings} className="post-slider">
+                        <Slider {...sliderSettingsV2Post(post.cards.length, !isMobileDeviceV3(700))} className="post-slider">
                             {post.cards.map((card, index) => (
                                 <div key={index} className="post-slide">
                                     <img src={card} alt={`Slide ${index + 1}`} className="post-image"/>
