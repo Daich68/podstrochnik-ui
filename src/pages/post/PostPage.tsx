@@ -48,25 +48,24 @@ export const PostPage: React.FC = () => {
 
                 {showLinks ? (
                     <div className="helpful-links-container">
-                    <div className="helpful-links-content">
-                    <InnerDangerous html={post.helpful_links} />
-        </div>
-    <h5><InnerDangerous html={post.editor_name}/></h5>
-</div>
-) : (
-                <>
-                    <h1 className="post-title"><InnerDangerous html={post.title} /></h1>
-                    <div className="post-author"><InnerDangerous html={post.author_name} /></div>
+                        <div className="helpful-links-content">
+                            <InnerDangerous html={post.helpful_links}/></div>
+                        <h5><InnerDangerous html={post.editor_name}/></h5>
+                        <p className="post-time">опубликовано: {GetPrettyTimePub({date: new Date(post.time_publication)})}</p>
+                    </div>
+                ) : (
+                    <>
+                        <h1 className="post-title"><InnerDangerous html={post.title} /></h1>
+                        <div className="post-author"><InnerDangerous html={post.author_name} /></div>
 
-                    <Slider {...sliderSettings} className="post-slider">
-                        {post.cards.map((card, index) => (
-                            <div key={index} className="post-slide">
-                                <img src={card} alt={`Slide ${index + 1}`} className="post-image"/>
-                            </div>
-                        ))}
-                    </Slider>
-                    <p className="post-time">опубликовано: {GetPrettyTimePub({ date: new Date(post.time_publication) })}</p>
-                </>
+                        <Slider {...sliderSettings} className="post-slider">
+                            {post.cards.map((card, index) => (
+                                <div key={index} className="post-slide">
+                                    <img src={card} alt={`Slide ${index + 1}`} className="post-image"/>
+                                </div>
+                            ))}
+                        </Slider>
+                    </>
             )}
         </div>
     );
