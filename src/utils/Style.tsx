@@ -30,8 +30,8 @@ export const isMobileDeviceV3 = (minWidth: number): boolean => {
     return window.innerWidth < minWidth;
 };
 
-export const sliderSettingsV2 = (length: number, arrows: boolean) => ({
-    dots: length > 1,
+export const sliderSettingsV2Main = (length: number, arrows: boolean) => ({
+    dots: false,
     infinite: length > 1,
     speed: 500,
     slidesToShow: 1,
@@ -47,5 +47,5 @@ export const sliderSettingsV2Post = (length: number, arrows: boolean) => ({
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: arrows
+    arrows: false
 });

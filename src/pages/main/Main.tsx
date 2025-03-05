@@ -6,7 +6,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./Main.css";
-import {RemoveLinksFromHTML, sliderSettingsV2, UpdateFavicon} from "../../utils/Style";
+import {RemoveLinksFromHTML, sliderSettingsV2Main, UpdateFavicon} from "../../utils/Style";
 import lupaIcon from "../../static/lupa.svg";
 import arrowIcon from "../../static/arrow.svg";
 
@@ -62,7 +62,7 @@ export const MainPage: React.FC = () => {
         <>
             <div className="header-container">
                 <div className="site-title">
-                    <h1><i>проект подстрочник</i></h1>
+                    <h1>проект подстрочник</h1>
                     {!isSearchOpen && <div className="search-icon" onClick={toggleSearch}>
                         <img src={lupaIcon} alt="Search"/>
                     </div>}
@@ -85,7 +85,7 @@ export const MainPage: React.FC = () => {
                     <Link to={`/post/${post._id}`} key={post._id} className="post-card"
                           style={{backgroundColor: post.color}}>
                         <div className="slider-container">
-                            <Slider {...sliderSettingsV2(post.cards.length, false)}>
+                            <Slider {...sliderSettingsV2Main(post.cards.length, false)}>
                             {post.cards.map((url, index) => (
                                     // eslint-disable-next-line
                                     <img key={index} src={url} alt={`Post ${post._id} - Image ${index + 1}`} />

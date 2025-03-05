@@ -21,21 +21,20 @@
     }
     .site-title{
         h1 {
-            font-size: 1rem;
+            font-size: 1.5rem;
         }
     }
     .search-icon {
         padding-left: 0.5rem;
         img {
             width: auto;
-            height: 0.5rem;
+            height: 0.8rem;
         }
     }
 
     .search-input {
         border-radius: 2px;
-        /*border: 1px solid #ccc;*/
-        font-size: 0.5rem;
+        font-size: 1rem;
     }
 
     .search-container.open {
@@ -116,6 +115,9 @@
     justify-content: space-around;
     color: white;
     align-items: baseline;
+    h1 {
+        margin: 0;
+    }
 }
 
 
@@ -123,7 +125,7 @@
     display: flex;
     align-items: baseline;
     justify-content: flex-start;
-    padding: 20px;
+    padding: 0 20px;
     position: relative;
 }
 

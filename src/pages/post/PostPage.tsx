@@ -42,7 +42,7 @@ export const PostPage: React.FC = () => {
                     <div className="helpful-links-container">
                         <div className="helpful-links-content">
                             <InnerDangerous html={post.helpful_links}/></div>
-                        <h5><InnerDangerous html={post.editor_name}/></h5>
+                        <p className="post-time"><InnerDangerous html={post.editor_name}/></p>
                         <p className="post-time">опубликовано: {GetPrettyTimePub({date: new Date(post.time_publication)})}</p>
                     </div>
                 ) : (
