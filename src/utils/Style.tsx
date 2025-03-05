@@ -1,4 +1,6 @@
 export const UpdateFavicon = (color: string) => {
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    if (isSafari) return
     const canvas = document.createElement("canvas");
     canvas.width = 32;
     canvas.height = 32;
