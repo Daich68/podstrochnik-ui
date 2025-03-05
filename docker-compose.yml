@@ -9,7 +9,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3003:3003"
-    mem_limit: 636m
+    mem_limit: 800m
     networks:
       - traefik
       - default

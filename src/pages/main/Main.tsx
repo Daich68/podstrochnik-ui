@@ -102,8 +102,8 @@ export const MainPage: React.FC = () => {
             <>
                 <hr className="footer-divider"/>
                 <footer className="site-footer">
-                    <p>design: <a href="https://katymezentseva.com" target="_blank" rel="noopener noreferrer">katymezentseva.com</a></p>
-                    <p>founder and editor: <a href="https://analialiev.com" target="_blank" rel="noopener noreferrer">analialiev.com</a></p>
+                    <p>design: <a href="https://katyamezentseva.com" target="_blank" rel="noopener noreferrer">katymezentseva.com</a></p>
+                    <p>founder and editor: <a href="https://alialiev.com" target="_blank" rel="noopener noreferrer">analialiev.com</a></p>
                 </footer>
             </>
 
