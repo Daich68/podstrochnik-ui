@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form } from "formik";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { GetTexts, UpdateText } from "../../../api/Posts";
