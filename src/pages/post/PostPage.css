@@ -42,6 +42,12 @@
     color: #f0f0f0;
 }
 
+.helpful-links-btn:hover {
+    a {
+        color: #f0f0f0;
+    }
+}
+
 .helpful-links-container {
     text-align: left;
     background: rgba(255, 255, 255, 0.9);
