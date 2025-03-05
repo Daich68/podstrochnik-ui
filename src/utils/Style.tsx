@@ -43,7 +43,7 @@ export const sliderSettingsV2 = (length: number, arrows: boolean) => ({
 
 export const sliderSettingsV2Post = (length: number, arrows: boolean) => ({
     dots: length>1,
-    infinite: true,
+    infinite: length>1,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
