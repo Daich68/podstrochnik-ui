@@ -99,6 +99,14 @@ export const MainPage: React.FC = () => {
                     </Link>
                 ))}
             </div>
+            <>
+                <hr className="footer-divider"/>
+                <footer className="site-footer">
+                    <p>design: <a href="https://katymezentseva.com" target="_blank" rel="noopener noreferrer">katymezentseva.com</a></p>
+                    <p>founder and editor: <a href="https://analialiev.com" target="_blank" rel="noopener noreferrer">analialiev.com</a></p>
+                </footer>
+            </>
+
         </>
     );
 };
