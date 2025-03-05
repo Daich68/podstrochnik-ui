@@ -168,3 +168,7 @@
 .close-btn:hover, .prev-btn:hover, .next-btn:hover {
     background: rgba(255, 255, 255, 0.6);
 }
+
+.helper-post{
+    height: 10vh;
+}

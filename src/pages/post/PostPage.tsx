@@ -84,6 +84,7 @@ export const PostPage: React.FC = () => {
                             </div>
                         ))}
                     </Slider>
+                    {isMobile && <div className={"helper-post"}></div>}
                 </>
             )}
 

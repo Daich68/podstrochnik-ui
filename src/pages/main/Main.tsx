@@ -104,6 +104,7 @@ export const MainPage: React.FC = () => {
                 <footer className="site-footer">
                     <p>design: <a href="https://katyamezentseva.com" target="_blank" rel="noopener noreferrer">katyamezentseva.com</a></p>
                     <p>founder and chief editor : <a href="https://alialiev.com" target="_blank" rel="noopener noreferrer">alialiev.com</a></p>
+                    <p>tg<a href="https://t.me/podstrochnik_project" target="_blank" rel="noopener noreferrer">@podstrochnik_project</a></p>
                 </footer>
             </>
 
