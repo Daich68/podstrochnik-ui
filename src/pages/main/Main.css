@@ -21,7 +21,8 @@
     }
     .site-title{
         h1 {
-            font-size: 1.3rem;
+            padding-top: 1rem;
+            font-size: 1.5rem;
         }
     }
     .search-icon {
@@ -124,6 +125,7 @@
     align-items: baseline;
     h1 {
         margin: 0;
+        white-space: nowrap;
     }
 }
 

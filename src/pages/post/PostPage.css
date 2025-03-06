@@ -140,9 +140,16 @@
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
 }
+/*position: absolute;*/
+.prev-btn, .next-btn{
+    position: sticky;
+}
+
+.close-btn {
+    position: absolute;
+}
 
 .close-btn, .prev-btn, .next-btn {
-    position: absolute;
     background: transparent;
     border: none;
     padding: 10px;

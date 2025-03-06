@@ -6,7 +6,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./Main.css";
-import {RemoveLinksFromHTML, sliderSettingsV2Main, UpdateFavicon} from "../../utils/Style";
+import { RemoveLinksFromHTML, sliderSettingsV2Main, UpdateFavicon} from "../../utils/Style";
 import lupaIcon from "../../static/lupa.svg";
 import arrowIcon from "../../static/arrow.svg";
 
