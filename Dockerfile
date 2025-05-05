@@ -16,8 +16,11 @@ COPY . .
 # Build the React app for production
 RUN yarn build
 
-# Expose the port on which your app will run
+# Install a simple static file server to serve the build files
+RUN yarn global add serve
+
+# Expose the port for your app
 EXPOSE 3003
 
-# Start the React app
-CMD ["yarn", "start"]
+# Serve the production build
+CMD ["serve", "-s", "build", "-l", "3003"]
