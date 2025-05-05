@@ -18,8 +18,9 @@ services:
       - "traefik.http.routers.pds-ui.rule=Host(`podstrochnik.ru`)"
       - "traefik.http.routers.pds-ui.entrypoints=websecure"
       - "traefik.http.routers.pds-ui.tls.certresolver=myresolver"
+      - "traefik.http.routers.pds-ui.tls=true"
       - "traefik.docker.network=traefik"
-      - "traefik.http.routers.pds-ui.middlewares=websocket-headers"
+      - "traefik.http.routers.pds-ui.middlewares=redirect-to-https,websocket-headers"
 
 networks:
   default:
