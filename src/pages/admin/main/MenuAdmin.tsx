@@ -10,7 +10,7 @@ export const MenuAdmin: React.FC = () => {
                 <Link className={"menu-admin"} to={"/admin/main"}>Публикации</Link>
                 <Link className={"menu-admin"} to={"/admin/texts"}>Тексты на страницах</Link>
                 <Link className={"menu-admin"} to={"/admin/add"}>Новая публикация</Link>
-                <Link className={"menu-admin"} to={"/admin/exit"}>Выход</Link>
+                <Link onClick={()=> {localStorage.clear()}} className={"menu-admin"} to={"/admin/login"}>Выход</Link>
             </div>
             <hr/>
         </div>

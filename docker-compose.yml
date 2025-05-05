@@ -19,6 +19,7 @@ services:
       - "traefik.http.routers.pds-ui.entrypoints=websecure"
       - "traefik.http.routers.pds-ui.tls.certresolver=myresolver"
       - "traefik.docker.network=traefik"
+      - "traefik.http.routers.pds-ui.middlewares=websocket-headers"
 
 networks:
   default:
