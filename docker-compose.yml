@@ -18,7 +18,7 @@ services:
       - "traefik.http.routers.pds-ui.tls.certresolver=myresolver"
       - "traefik.http.routers.pds-ui.tls=true"
       - "traefik.docker.network=traefik"
-      - "traefik.http.routers.pds-ui.middlewares=redirect-to-https,websocket-headers"
+      - "traefik.http.routers.pds-ui.middlewares=redirect-to-https"
       - "traefik.http.services.pds-ui.loadbalancer.server.port=3003"
 
 networks:
