@@ -263,15 +263,13 @@ export const MainPage: React.FC = () => {
         const container = pageRef.current?.querySelector(".search-container");
         const input = searchInputRef.current;
         if (!container || !input) return;
-        const isMobile = window.innerWidth < 700;
-        const targetW = isMobile ? 110 : 260;
-        const gap = isMobile ? 8 : 20;
+        const targetW = window.innerWidth < 700 ? 110 : 260;
         if (open) {
             // Placeholder «пропечатывается» слева направо из случайных литер
             const target = "поиск...";
             const proxy = { p: 0 };
             gsap.timeline()
-                .to(container, { width: targetW, marginLeft: gap, duration: 0.5, ease: "carriage" })
+                .to(container, { width: targetW, marginLeft: 0, duration: 0.5, ease: "carriage" })
                 .fromTo(".search-rule",
                     { scaleX: 0 },
                     { scaleX: 1, duration: 0.5, ease: "carriage" },
@@ -293,7 +291,7 @@ export const MainPage: React.FC = () => {
             gsap.timeline()
                 .to(".search-input", { autoAlpha: 0, x: -10, duration: 0.25, ease: "power2.in" })
                 .to(".search-rule", { scaleX: 0, transformOrigin: "right center", duration: 0.35, ease: "carriage" }, "<")
-                .to(container, { width: 0, marginLeft: 0, duration: 0.35, ease: "power3.inOut" }, "-=0.15");
+                .to(container, { width: 0, marginLeft: -16, duration: 0.35, ease: "power3.inOut" }, "-=0.15");
         }
     });
 
@@ -304,7 +302,7 @@ export const MainPage: React.FC = () => {
         if (!container) return;
         gsap.set(container, {
             width: window.innerWidth < 700 ? 110 : 260,
-            marginLeft: window.innerWidth < 700 ? 8 : 20,
+            marginLeft: 0,
         });
         gsap.set(".search-rule", { scaleX: 1 });
         gsap.set(".search-input", { autoAlpha: 1 });

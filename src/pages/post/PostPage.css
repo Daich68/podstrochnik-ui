@@ -32,6 +32,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: var(--space-3);
     z-index: 700;
 }
 
@@ -97,7 +98,7 @@
     text-align: left;
     pointer-events: auto;
     background-color: rgba(22, 22, 15, 0.85);
-    padding: 1rem 1.2rem;
+    padding: var(--space-4);
     border-radius: 2px;
 }
 
@@ -115,11 +116,11 @@
 .marginalia__rule {
     height: 1px;
     background-color: rgba(245, 242, 232, 0.45);
-    margin: 0.4rem 0 0.7rem;
+    margin: var(--space-2) 0 var(--space-3);
 }
 
 .marginalia__body p {
-    margin: 0.3rem 0;
+    margin: var(--space-1) 0;
 }
 
 .marginalia__editor {
@@ -156,7 +157,7 @@
 /*MOBILE*/
 @media (max-width: 700px) {
     .post-container {
-        padding: 5px;
+        padding: var(--space-1);
     }
     .post-slider {
         width: 100%;
@@ -184,7 +185,7 @@
 /*DESC*/
 @media (min-width: 700px) {
     .post-container {
-        padding: 20px;
+        padding: var(--space-5);
     }
     .post-slider {
         width: 80%;
@@ -222,7 +223,7 @@
 .post-rule {
     height: 1px;
     background-color: rgba(0, 0, 0, 0.45);
-    margin: 0.35rem auto 0.3rem;
+    margin: var(--space-2) auto;
     width: 100%;
 }
 
@@ -240,7 +241,7 @@
     font-style: italic;
     font-size: 0.85rem;
     color: rgba(0, 0, 0, 0.55);
-    margin-top: 0.6rem;
+    margin-top: var(--space-3);
     margin-bottom: 0;
 }
 
@@ -323,7 +324,7 @@
     position: fixed;
     background: transparent;
     border: none;
-    padding: 16px 20px;
+    padding: var(--space-4) var(--space-5);
     font-size: 2rem;
     cursor: pointer;
     color: white;
