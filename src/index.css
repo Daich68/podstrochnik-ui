@@ -3,6 +3,17 @@ body {
   font-family: "RG-StandardMedium", serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Выделение оставляем только там, где вводят текст */
+input,
+textarea,
+[contenteditable],
+[contenteditable] * {
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 

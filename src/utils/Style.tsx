@@ -24,6 +24,17 @@ export const UpdateFavicon = (color: string) => {
     }
 };
 
+// Относительная яркость цвета фона — чтобы выбирать читаемый цвет текста
+export const IsDarkColor = (color: string): boolean => {
+    const hex = color.replace("#", "");
+    if (hex.length !== 6 && hex.length !== 3) return false;
+    const full = hex.length === 3 ? hex.split("").map(c => c + c).join("") : hex;
+    const r = parseInt(full.slice(0, 2), 16);
+    const g = parseInt(full.slice(2, 4), 16);
+    const b = parseInt(full.slice(4, 6), 16);
+    return (0.2126 * r + 0.7152 * g + 0.0722 * b) < 128;
+};
+
 export const RemoveLinksFromHTML = (html: string): string => {
     return html.replace(/<a\b[^>]*>(.*?)<\/a>/gi, '$1');
 };

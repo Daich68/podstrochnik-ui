@@ -1,0 +1,50 @@
+/* Нативный скроллбар прячем, пока активен наборный */
+html.has-type-scrollbar {
+    scrollbar-width: none;
+}
+
+html.has-type-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.type-scrollbar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 22px;
+    z-index: 8000;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow: hidden;
+    /* difference — литеры читаются и на оливковом, и на цветах постов */
+    mix-blend-mode: difference;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: none;
+}
+
+.type-scrollbar span {
+    display: block;
+    height: 11px;
+    line-height: 11px;
+    font-size: 9px;
+    font-style: italic;
+    text-align: center;
+    width: 100%;
+    /* несобранный набор — едва различим */
+    color: rgba(245, 242, 232, 0.16);
+}
+
+/* пропечатанные литеры */
+.type-scrollbar span.is-printed {
+    color: #f5f2e8;
+}
+
+/* каретка — литера на фронте печати */
+.type-scrollbar span.is-head {
+    color: #f5f2e8;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}

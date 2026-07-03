@@ -9,25 +9,39 @@ import {Texts} from "./pages/admin/texts/Texts";
 import {MockPage} from "./utils/MockPage";
 import {MainPage} from "./pages/main/Main";
 import {PostPage} from "./pages/post/PostPage";
+import CustomCursor from "./components/CustomCursor";
+import TypeScrollbar from "./components/TypeScrollbar";
+import "./components/scrollbar.css";
+import {SmoothScroll} from "./anim/SmoothScroll";
+import {RouteTransition} from "./anim/RouteTransition";
+import {Preloader} from "./anim/Preloader";
 
 function App() {
   return (
-      // eslint-disable-next-line react/jsx-no-undef
       <BrowserRouter>
-          {/* eslint-disable-next-line react/jsx-no-undef */}
-        <Routes>
-            {/*admins*/}
-            <Route path="/admin/main" element={<Main/>}/>
-            <Route path="/admin/edit" element={<Edit/>}/>
-            <Route path="/admin/add" element={<Add/>}/>
-            <Route path="/admin/login" element={<Login/>}/>
-            <Route path="/admin/texts" element={<Texts/>}/>
-            {/*user*/}
-            <Route path="/" element={<MainPage/>}/>
-            <Route path="/post/:id" element={<PostPage/>}/>
-            <Route path="/search" element={<MockPage pageName={"poiska"}/>}/>
-            <Route path="/about" element={<MockPage pageName={"o proekte"}/>}/>
-        </Routes>
+          <CustomCursor/>
+          <TypeScrollbar/>
+          <Preloader>
+          <SmoothScroll>
+              <RouteTransition>
+                  {(location) => (
+                      <Routes location={location}>
+                          {/*admins*/}
+                          <Route path="/admin/main" element={<Main/>}/>
+                          <Route path="/admin/edit" element={<Edit/>}/>
+                          <Route path="/admin/add" element={<Add/>}/>
+                          <Route path="/admin/login" element={<Login/>}/>
+                          <Route path="/admin/texts" element={<Texts/>}/>
+                          {/*user*/}
+                          <Route path="/" element={<MainPage/>}/>
+                          <Route path="/post/:id" element={<PostPage/>}/>
+                          <Route path="/search" element={<MockPage pageName={"poiska"}/>}/>
+                          <Route path="/about" element={<MockPage pageName={"o proekte"}/>}/>
+                      </Routes>
+                  )}
+              </RouteTransition>
+          </SmoothScroll>
+          </Preloader>
       </BrowserRouter>
   );
 }

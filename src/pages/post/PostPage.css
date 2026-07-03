@@ -1,12 +1,28 @@
+/* Страница чтения — ровно один экран, без скролла */
 .post-container {
     text-align: center;
-    min-height: 100vh;
+    height: 100vh;
+    height: 100dvh;
+    width: 100vw;
+    box-sizing: border-box;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     transition: background-color 0.3s ease;
     position: relative;
+}
+
+/* Внутренняя «страница»: сжимается, когда вокруг возникают примечания */
+.post-page-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    position: relative;
+    z-index: 600;
 }
 
 .top-bar {
@@ -16,26 +32,39 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.back-link a {
-    text-decoration: none;
-    font-size: 1rem;
+    z-index: 700;
 }
 
 .helpful-links-btn {
     background: none;
     border: none;
     font-size: 1rem;
+    font-family: inherit;
     cursor: pointer;
     color: black;
     transition: color 0.3s;
 }
 
-.helpful-links-content{
-    p {
-        margin: 0.2rem 0;
-    }
+/* Типографский маркер вместо emoji */
+.btn-mark {
+    display: inline-block;
+    font-size: 1.1em;
+}
+
+/* Контраст поверх произвольного цвета поста */
+.post-container.on-dark .helpful-links-btn,
+.post-container.on-dark .helpful-links-btn a,
+.post-container.on-dark .post-title {
+    color: #f5f2e8;
+}
+
+.post-container.on-dark .post-author {
+    color: rgba(245, 242, 232, 0.75);
+}
+
+.post-container.on-dark .helpful-links-btn:hover,
+.post-container.on-dark .helpful-links-btn:hover a {
+    color: rgba(245, 242, 232, 0.6);
 }
 
 .helpful-links-btn:hover {
@@ -48,15 +77,81 @@
     }
 }
 
-.helpful-links-container {
+/* Примечания — маргиналии вокруг страницы, палитра прелоадера */
+.marginalia {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    pointer-events: none;
+}
+
+.marginalia__veil {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(22, 22, 15, 0.9);
+}
+
+.marginalia__links {
+    position: absolute;
+    z-index: 700;
+    color: #f5f2e8;
     text-align: left;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 80%;
-    min-height: 60%;
-    min-width: 70%;
-    transition: opacity 0.3s ease-in-out;
+    pointer-events: auto;
+    background-color: rgba(22, 22, 15, 0.85);
+    padding: 1rem 1.2rem;
+    border-radius: 2px;
+}
+
+.marginalia__links a {
+    color: #f5f2e8;
+}
+
+.marginalia__label {
+    display: block;
+    font-style: italic;
+    color: rgba(245, 242, 232, 0.7);
+    min-height: 1.2em;
+}
+
+.marginalia__rule {
+    height: 1px;
+    background-color: rgba(245, 242, 232, 0.45);
+    margin: 0.4rem 0 0.7rem;
+}
+
+.marginalia__body p {
+    margin: 0.3rem 0;
+}
+
+.marginalia__editor {
+    position: absolute;
+    z-index: 700;
+    right: 2.5vw;
+    top: 50%;
+    transform: translateY(-50%);
+    writing-mode: vertical-rl;
+    color: rgba(245, 242, 232, 0.65);
+    font-style: italic;
+    letter-spacing: 0.12em;
+    pointer-events: auto;
+}
+
+.marginalia__editor a {
+    color: rgba(245, 242, 232, 0.85);
+}
+
+.marginalia__date {
+    position: absolute;
+    z-index: 700;
+    bottom: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(245, 242, 232, 0.55);
+    font-style: italic;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    margin: 0;
+    pointer-events: auto;
 }
 
 /*MOBILE*/
@@ -67,11 +162,23 @@
     .post-slider {
         width: 100%;
     }
-    .masonry-grid {
-        column-count: 2;
-    }
     .post-image {
         max-width: 90vw;
+        max-height: 52vh;
+    }
+    .marginalia__links {
+        left: 6vw;
+        right: 6vw;
+        bottom: 9vh;
+        max-height: 45vh;
+        overflow-y: auto;
+    }
+    .marginalia__editor {
+        writing-mode: horizontal-tb;
+        top: 8vh;
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
     }
 }
 
@@ -83,23 +190,66 @@
     .post-slider {
         width: 80%;
     }
-    .masonry-grid {
-        column-count: 4;
-    }
     .post-image {
         max-width: 70vw;
+        max-height: 56vh;
+    }
+    .marginalia__links {
+        left: 2vw;
+        top: 50%;
+        transform: translateY(-50%);
+        max-width: 20vw;
+        max-height: 70vh;
+        overflow-y: auto;
     }
 }
 
-/* Post Content */
+/* Post Content — межстрочная структура: заголовок / линия / автор-глосс */
+.post-heading {
+    display: inline-block;
+    max-width: 80vw;
+}
+
 .post-title {
-    font-size: 1rem;
+    font-size: 1.15rem;
     font-weight: bold;
     margin-bottom: 0;
 }
 
+.post-rule {
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.45);
+    margin: 0.35rem auto 0.3rem;
+    width: 100%;
+}
+
+.post-container.on-dark .post-rule {
+    background-color: rgba(245, 242, 232, 0.5);
+}
+
 .post-author {
     color: #555;
+    font-style: italic;
+    letter-spacing: 0.04em;
+}
+
+.post-counter {
+    font-style: italic;
+    font-size: 0.85rem;
+    color: rgba(0, 0, 0, 0.55);
+    margin-top: 0.6rem;
+    margin-bottom: 0;
+}
+
+.post-container.on-dark .post-counter {
+    color: rgba(245, 242, 232, 0.6);
+}
+
+.post-loading {
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+    padding-top: 40vh;
+    font-size: 2rem;
 }
 
 .post-time {
@@ -112,13 +262,36 @@
 }
 
 .post-slider {
-    max-height: 80vh;
+    max-height: 72vh;
     margin: 0 auto;
 }
 
 .post-image {
-    max-height: 70vh;
     border-radius: 10px;
+    cursor: pointer;
+}
+
+/* Точки слайдера — звёздочки-сноски */
+.post-slider .slick-dots li button:before {
+    content: "*";
+    font-size: 15px;
+    line-height: 22px;
+    color: rgba(0, 0, 0, 0.85);
+}
+
+.post-container.on-dark .post-slider .slick-dots li button:before {
+    color: rgba(245, 242, 232, 0.9);
+}
+
+.fullscreen-counter {
+    position: absolute;
+    bottom: 4vh;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(245, 242, 232, 0.75);
+    font-style: italic;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
 }
 
 .fullscreen-overlay {
@@ -140,7 +313,7 @@
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
 }
-/*position: absolute;*/
+
 .prev-btn, .next-btn{
     position: sticky;
 }
@@ -174,8 +347,4 @@
 
 .close-btn:hover, .prev-btn:hover, .next-btn:hover {
     background: rgba(255, 255, 255, 0.6);
-}
-
-.helper-post{
-    height: 10vh;
 }

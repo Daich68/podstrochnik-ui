@@ -1,0 +1,37 @@
+/* Кастомный скроллбар «подстрочника» — тонкая чернильная линия
+   на полях книги. Достаточно импортировать этот файл один раз. */
+
+/* Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #2e2e10 transparent;
+}
+
+/* Chrome / Safari / Edge */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  /* Едва заметный оливковый оттенок дорожки. */
+  background: rgba(46, 46, 16, 0.08);
+}
+
+::-webkit-scrollbar-thumb {
+  /* Тёмно-оливковый, почти чёрный — как чернильная линейка. */
+  background-color: #2e2e10;
+  border-radius: 4px;
+  /* Прозрачная рамка + content-box сужают «чернильную линию» до ~4px. */
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active {
+  background-color: rgba(255, 255, 255, 0.85);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}

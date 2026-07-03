@@ -2,6 +2,7 @@
     column-count: 2;
     column-gap: 15px;
     padding: 20px;
+    perspective: 1100px;
 }
 
 .search-icon {
@@ -34,12 +35,11 @@
     }
 
     .search-input {
-        border-radius: 2px;
         font-size: 1rem;
     }
 
-    .search-container.open {
-        width: 100px;
+    .title-gloss {
+        font-size: 0.7rem;
     }
 
     .site-footer {
@@ -67,14 +67,13 @@
     }
 
     .search-input {
-        border-radius: 8px;
-        /*border: 1px solid #ccc;*/
         font-size: 1.5rem;
     }
 
-    .search-container.open {
-        width: 260px;
+    .title-gloss {
+        font-size: 1rem;
     }
+
     .site-footer {
         font-size: 1.1rem
     }
@@ -89,11 +88,7 @@
     text-decoration: none;
     border-radius: 10px;
     overflow: hidden;
-    transition: transform 0.3s ease;
-}
-
-.post-card:hover {
-    transform: scale(1.05);
+    transform-style: preserve-3d;
 }
 
 .slider-container img {
@@ -103,19 +98,43 @@
     border-radius: 10px;
 }
 
+/* Подпись выезжает из-под нижней «строки» карточки */
 .post-info {
     position: absolute;
     bottom: 0;
     width: 100%;
     padding: 10px;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(18, 18, 11, 0.82);
     color: white;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path 0.5s cubic-bezier(0.22, 0.8, 0.2, 1);
+}
+
+.post-info h3,
+.post-info p {
+    transform: translateY(8px);
+    transition: transform 0.5s cubic-bezier(0.22, 0.8, 0.2, 1);
 }
 
 .post-card:hover .post-info {
-    opacity: 1;
+    clip-path: inset(0 0 0 0);
+}
+
+.post-card:hover .post-info h3,
+.post-card:hover .post-info p {
+    transform: translateY(0);
+}
+
+/* На тач-устройствах hover нет — подпись видна всегда */
+@media (hover: none) {
+    .post-info {
+        clip-path: none;
+        background: rgba(18, 18, 11, 0.6);
+    }
+    .post-info h3,
+    .post-info p {
+        transform: none;
+    }
 }
 
 .site-title{
@@ -129,6 +148,44 @@
     }
 }
 
+.title-block {
+    display: inline-block;
+}
+
+/* Тонкая «подстрочная» линия под заголовком */
+.title-rule {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.65);
+    margin-top: 0.2rem;
+    transform: scaleX(0);
+}
+
+/* Глосс-транслит — как межстрочный перевод под оригиналом */
+.title-gloss {
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 0.08em;
+    margin-top: 0.15rem;
+    min-height: 1.2em;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.empty-state {
+    color: rgba(255, 255, 255, 0.65);
+    font-style: italic;
+    padding: 1rem 0;
+}
+
+/* Счётчик результатов поиска — сноска на полях */
+.search-count {
+    color: rgba(255, 255, 255, 0.65);
+    font-style: italic;
+    padding-left: 0.7rem;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+}
+
 
 .header-container {
     display: flex;
@@ -139,11 +196,38 @@
 }
 
 
+/* Поле поиска — не коробка, а строка с подстрочной линией */
 .search-container {
     width: 0;
-    padding-left: 1rem;
     overflow: hidden;
-    transition: width 0.3s ease-in-out;
+    display: inline-block;
+    vertical-align: baseline;
+}
+
+.search-input {
+    width: 100%;
+    box-sizing: border-box;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-family: inherit;
+    caret-color: white;
+    padding: 0 0 2px;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+    font-style: italic;
+}
+
+.search-rule {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.65);
+    transform: scaleX(0);
+    transform-origin: left center;
 }
 
 
@@ -176,4 +260,3 @@
     color: #ffffff;
     text-decoration: underline;
 }
-
