@@ -63,6 +63,10 @@ export const sliderSettingsV2Main = (length: number, arrows: boolean) => ({
     swipe: false,
     draggable: false,
     touchMove: false,
+    // На главной десятки карточек — без lazyLoad каждая сразу грузит
+    // все свои картинки (а infinite ещё и клонирует слайды), это и
+    // держит первую отрисовку сетки. Грузим только видимый кадр.
+    lazyLoad: "ondemand" as const,
 });
 
 export const sliderSettingsV2Post = (length: number, arrows: boolean) => ({

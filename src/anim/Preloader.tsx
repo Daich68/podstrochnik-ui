@@ -85,7 +85,10 @@ export const Preloader: React.FC<{ children: React.ReactNode }> = ({ children })
 
     return (
         <>
-            {phase !== "loading" && children}
+            {/* Контент монтируется сразу — запрос постов и картинок должен
+                идти параллельно с декоративной шторкой, а не после неё.
+                Шторка просто визуально перекрывает уже загружающийся сайт. */}
+            {children}
             {phase !== "done" && (
                 <div className="preloader" ref={overlayRef} aria-hidden="true">
                     <div className="preloader__center">
