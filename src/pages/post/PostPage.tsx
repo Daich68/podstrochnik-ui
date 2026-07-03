@@ -8,7 +8,7 @@ import "slick-carousel/slick/slick-theme.css";
 import "./PostPage.css";
 import { InnerDangerous } from "../../utils/InnerDangerous";
 import { GetPrettyTimePub } from "../../utils/DatetimeUtils";
-import { IsDarkColor, isMobileDeviceV3, sliderSettingsV2Post, UpdateFavicon } from "../../utils/Style";
+import { IsDarkColor, isMobileDeviceV3, sliderSettingsV2Post, StripHtml, UpdateFavicon } from "../../utils/Style";
 import useSound from "use-sound";
 // @ts-ignore
 import page from "../../static/page.wav"
@@ -192,6 +192,14 @@ export const PostPage: React.FC = () => {
         flipImage(-1);
     };
 
+    // Пока открыт полноэкранный просмотр — не даём скроллиться фону.
+    useEffect(() => {
+        if (fullscreenIndex === null) return;
+        const prevOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        return () => { document.body.style.overflow = prevOverflow; };
+    }, [fullscreenIndex]);
+
     // Клавиатура: в полноэкранном режиме Esc/стрелки; в режиме чтения
     // стрелки листают слайдер, Esc закрывает примечания.
     useEffect(() => {
@@ -216,12 +224,20 @@ export const PostPage: React.FC = () => {
     return (
         <div className={`post-container ${IsDarkColor(post.color) ? "on-dark" : "on-light"}`} ref={containerRef} style={{ backgroundColor: post.color }}>
             <div className="top-bar">
-                <button className="helpful-links-btn"><Link style={{textDecoration: "none"}} to={"/"}><span className="btn-mark">←</span>{isMobile? "" : " на главную"}</Link></button>
-                <button className="helpful-links-btn" onClick={() => openFullscreen(currentSlide)}><span className="btn-mark">⤢</span>{isMobile? "" : " полный экран"}</button>
+                <Link className="helpful-links-btn" style={{textDecoration: "none"}} to={"/"} aria-label="на главную">
+                    <span className="btn-mark">←</span>{isMobile ? "" : " на главную"}
+                </Link>
+                <button type="button" className="helpful-links-btn" onClick={() => openFullscreen(currentSlide)} aria-label="полный экран">
+                    <span className="btn-mark">⤢</span>{isMobile? "" : " полный экран"}
+                </button>
                 {!showLinks ?
-                    <button className="helpful-links-btn" onClick={() => setShowLinks(true)}><span className="btn-mark">*</span>{isMobile? "" :  " полезные ссылки"}</button>
+                    <button type="button" className="helpful-links-btn" onClick={() => setShowLinks(true)} aria-label="полезные ссылки">
+                        <span className="btn-mark">*</span>{isMobile? "" :  " полезные ссылки"}
+                    </button>
                     :
-                    <button className="helpful-links-btn" onClick={() => setShowLinks(false)}><span className="btn-mark">×</span>{isMobile? "" :" закрыть"}</button>
+                    <button type="button" className="helpful-links-btn" onClick={() => setShowLinks(false)} aria-label="закрыть примечания">
+                        <span className="btn-mark">×</span>{isMobile? "" :" закрыть"}
+                    </button>
                 }
             </div>
 
@@ -263,10 +279,10 @@ export const PostPage: React.FC = () => {
 
             {fullscreenIndex !== null && (
                 <div className="fullscreen-overlay">
-                    <button className="close-btn" onClick={closeFullscreen}>×</button>
-                    {post.cards.length > 1 && <button className="prev-btn" onClick={prevImage}>‹</button>}
-                    <img src={post.cards[fullscreenIndex]} alt="Fullscreen" className="fullscreen-image" />
-                    {post.cards.length > 1 && <button className="next-btn" onClick={nextImage}>›</button>}
+                    <button type="button" className="close-btn" onClick={closeFullscreen} aria-label="закрыть полноэкранный режим">×</button>
+                    {post.cards.length > 1 && <button type="button" className="prev-btn" onClick={prevImage} aria-label="предыдущий лист">‹</button>}
+                    <img src={post.cards[fullscreenIndex]} alt={StripHtml(post.title)} className="fullscreen-image" />
+                    {post.cards.length > 1 && <button type="button" className="next-btn" onClick={nextImage} aria-label="следующий лист">›</button>}
                     {post.cards.length > 1 &&
                         <span className="fullscreen-counter">{fullscreenIndex + 1} / {post.cards.length}</span>}
                 </div>

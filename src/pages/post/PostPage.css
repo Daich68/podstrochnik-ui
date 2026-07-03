@@ -71,10 +71,9 @@
     color: #f0f0f0;
 }
 
-.helpful-links-btn:hover {
-    a {
-        color: #f0f0f0;
-    }
+.helpful-links-btn:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
 }
 
 /* Примечания — маргиналии вокруг страницы, палитра прелоадера */
@@ -211,8 +210,12 @@
 }
 
 .post-title {
-    font-size: 1.15rem;
-    font-weight: bold;
+    /* Название произведения — главный текст разворота, не служебная подпись.
+       Вес держим за счёт размера/интервала, а не bold: у моношрифтовой
+       RG-StandardMedium bold — синтетический (браузерный faux-bold). */
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    font-weight: normal;
+    letter-spacing: 0.01em;
     margin-bottom: 0;
 }
 
@@ -267,7 +270,7 @@
 }
 
 .post-image {
-    border-radius: 10px;
+    border-radius: var(--radius);
     cursor: pointer;
 }
 
@@ -310,41 +313,46 @@
 .fullscreen-image {
     max-width: 90%;
     max-height: 90%;
-    border-radius: 10px;
+    border-radius: var(--radius);
     box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
 }
 
-.prev-btn, .next-btn{
-    position: sticky;
-}
-
-.close-btn {
-    position: absolute;
-}
-
+/* Стрелки и закрытие — прижаты к краям экрана (не картинки),
+   тап-таргет растим паддингом без сдвига видимого знака. */
 .close-btn, .prev-btn, .next-btn {
+    position: fixed;
     background: transparent;
     border: none;
-    padding: 10px;
+    padding: 16px 20px;
     font-size: 2rem;
     cursor: pointer;
     color: white;
+    border-radius: var(--radius);
     transition: background 0.3s;
 }
 
 .close-btn {
-    top: 10px;
-    right: 20px;
+    top: 12px;
+    right: 12px;
 }
 
 .prev-btn {
-    left: 5px;
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .next-btn {
-    right: 5px;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .close-btn:hover, .prev-btn:hover, .next-btn:hover {
     background: rgba(255, 255, 255, 0.6);
+}
+
+.close-btn:focus-visible, .prev-btn:focus-visible, .next-btn:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.9);
+    outline-offset: -4px;
 }

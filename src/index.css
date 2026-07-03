@@ -1,3 +1,7 @@
+:root {
+  --radius: 10px;
+}
+
 body {
   margin: 0;
   font-family: "RG-StandardMedium", serif;
@@ -20,8 +24,10 @@ textarea,
 @font-face {
   font-family: 'RG-StandardMedium';
   src: url('static/RG-StandardMedium.ttf') format('truetype');
+  font-display: swap;
 }
 
-iframe {
+/* Прячет только служебный оверлей CRA дев-сервера, а не контент постов */
+iframe#webpack-dev-server-client-overlay {
   display: none;
 }

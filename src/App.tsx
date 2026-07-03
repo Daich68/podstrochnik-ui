@@ -35,8 +35,8 @@ function App() {
                           {/*user*/}
                           <Route path="/" element={<MainPage/>}/>
                           <Route path="/post/:id" element={<PostPage/>}/>
-                          <Route path="/search" element={<MockPage pageName={"poiska"}/>}/>
-                          <Route path="/about" element={<MockPage pageName={"o proekte"}/>}/>
+                          <Route path="/search" element={<MockPage pageName={"поиска"}/>}/>
+                          <Route path="/about" element={<MockPage pageName={"о проекте"}/>}/>
                       </Routes>
                   )}
               </RouteTransition>

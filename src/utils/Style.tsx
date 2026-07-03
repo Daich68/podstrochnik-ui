@@ -39,6 +39,12 @@ export const RemoveLinksFromHTML = (html: string): string => {
     return html.replace(/<a\b[^>]*>(.*?)<\/a>/gi, '$1');
 };
 
+// Полная зачистка тегов — для сравнения при поиске и для alt-текстов,
+// где Quill-разметка иначе даёт ложные совпадения/технический мусор.
+export const StripHtml = (html: string): string => {
+    return html.replace(/<[^>]+>/g, "").trim();
+};
+
 export const isMobileDeviceV3 = (minWidth: number): boolean => {
     return window.innerWidth < minWidth;
 };
@@ -52,6 +58,11 @@ export const sliderSettingsV2Main = (length: number, arrows: boolean) => ({
     arrows: arrows,
     autoplay: length > 1,
     autoplaySpeed: 5000,
+    // Карточка целиком — ссылка на пост: свайп по карусели не должен
+    // читаться браузером как намерение перейти по ссылке.
+    swipe: false,
+    draggable: false,
+    touchMove: false,
 });
 
 export const sliderSettingsV2Post = (length: number, arrows: boolean) => ({

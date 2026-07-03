@@ -6,22 +6,56 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./Main.css";
-import { RemoveLinksFromHTML, sliderSettingsV2Main, UpdateFavicon} from "../../utils/Style";
+import { RemoveLinksFromHTML, sliderSettingsV2Main, StripHtml, UpdateFavicon} from "../../utils/Style";
 import lupaIcon from "../../static/lupa.svg";
 import arrowIcon from "../../static/arrow.svg";
 import { gsap, useGSAP, ScrollTrigger, SplitText, CYRILLIC_CHARS } from "../../anim/gsapSetup";
 
 // Кэш постов на время сессии: возврат на главную рендерится мгновенно,
-// без ожидания сети (перемешивание — заново при каждом заходе).
+// без ожидания сети. Порядок стабилен — перемешивание держится на
+// seed из sessionStorage (новый посетитель = новый порядок, но внутри
+// сессии/после reload читатель находит карточки на тех же местах).
 let postsCache: Post[] | null = null;
 
-const shuffle = (data: Post[]) => [...data].sort(() => Math.random() - 0.5);
+const SHUFFLE_SEED_KEY = "podstrochnik-shuffle-seed";
+
+const getSessionSeed = (): number => {
+    const stored = sessionStorage.getItem(SHUFFLE_SEED_KEY);
+    if (stored) return Number(stored);
+    const seed = Math.floor(Math.random() * 2147483647);
+    sessionStorage.setItem(SHUFFLE_SEED_KEY, String(seed));
+    return seed;
+};
+
+// mulberry32 — маленький детерминированный PRNG для Fisher–Yates
+// (в отличие от sort(() => Math.random() - 0.5), даёт равномерную тасовку).
+const mulberry32 = (seed: number) => {
+    let s = seed;
+    return () => {
+        s |= 0; s = (s + 0x6D2B79F5) | 0;
+        let t = Math.imul(s ^ (s >>> 15), 1 | s);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+};
+
+const shuffle = (data: Post[]) => {
+    const rand = mulberry32(getSessionSeed());
+    const arr = [...data];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(rand() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+};
 
 const randomCyr = () =>
     CYRILLIC_CHARS[Math.floor(Math.random() * CYRILLIC_CHARS.length)];
 
 export const MainPage: React.FC = () => {
     const [posts, setPosts] = useState<Post[]>(() => (postsCache ? shuffle(postsCache) : []));
+    const [loading, setLoading] = useState(() => !postsCache);
+    const [loadError, setLoadError] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
     const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
     const [filteredPosts, setFilteredPosts] = useState<Post[]>(posts);
@@ -42,14 +76,19 @@ export const MainPage: React.FC = () => {
                 setPosts(shuffled);
                 setFilteredPosts(shuffled);
             })
-            .catch(error => console.error(error));
+            .catch(error => {
+                console.error(error);
+                setLoadError(true);
+            })
+            .finally(() => setLoading(false));
     }, []);
 
     useEffect(() => {
+        const q = searchQuery.toLowerCase();
         setFilteredPosts(
             posts.filter(post =>
-                post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                post.author_name.toLowerCase().includes(searchQuery.toLowerCase())
+                StripHtml(post.title).toLowerCase().includes(q) ||
+                StripHtml(post.author_name).toLowerCase().includes(q)
             )
         );
     }, [searchQuery, posts]);
@@ -305,9 +344,10 @@ export const MainPage: React.FC = () => {
                         <div className="title-rule" aria-hidden="true"></div>
                         <div className="title-gloss" aria-hidden="true"></div>
                     </div>
-                    {!isSearchOpen && <div className="search-icon" onClick={toggleSearch} data-cursor data-cursor-text="поиск">
-                        <img src={lupaIcon} alt="Search"/>
-                    </div>}
+                    {!isSearchOpen && <button type="button" className="search-icon" onClick={toggleSearch}
+                                              aria-label="открыть поиск" data-cursor data-cursor-text="поиск">
+                        <img src={lupaIcon} alt="" aria-hidden="true"/>
+                    </button>}
                     <div className={`search-container ${isSearchOpen ? "open" : ""}`}>
                         <input
                             ref={searchInputRef}
@@ -315,14 +355,17 @@ export const MainPage: React.FC = () => {
                             placeholder="поиск..."
                             value={searchQuery}
                             onChange={handleSearchChange}
+                            onKeyDown={(e) => { if (e.key === "Escape") toggleSearch(); }}
                             className="search-input"
+                            aria-label="поиск по постам"
                         />
                         <div className="search-rule" aria-hidden="true"></div>
                     </div>
                     {isSearchOpen && searchQuery && <span className="search-count" aria-live="polite"></span>}
-                    {isSearchOpen && <div className="search-icon icon-transform " onClick={toggleSearch} data-cursor>
-                        <img src={arrowIcon} alt="Search"/>
-                    </div>}
+                    {isSearchOpen && <button type="button" className="search-icon icon-transform" onClick={toggleSearch}
+                                              aria-label="закрыть поиск" data-cursor>
+                        <img src={arrowIcon} alt="" aria-hidden="true"/>
+                    </button>}
                 </div>
             </div>
             <div className="masonry-grid" ref={gridRef}>
@@ -333,7 +376,9 @@ export const MainPage: React.FC = () => {
                             <Slider {...sliderSettingsV2Main(post.cards.length, false)}>
                             {post.cards.map((url, index) => (
                                     // eslint-disable-next-line
-                                    <img key={index} src={url} alt={`Post ${post._id} - Image ${index + 1}`} onLoad={scheduleRefresh} />
+                                    <img key={index} src={url}
+                                         alt={index === 0 ? StripHtml(post.title) : ""}
+                                         onLoad={scheduleRefresh} />
                                 ))}
                             </Slider>
                         </div>
@@ -343,18 +388,22 @@ export const MainPage: React.FC = () => {
                         </div>
                     </Link>
                 ))}
-                {searchQuery && filteredPosts.length === 0 && (
+                {loading && (
+                    <p className="empty-state">* загружается архив</p>
+                )}
+                {loadError && (
+                    <p className="empty-state">* не получилось загрузить архив — попробуйте обновить страницу</p>
+                )}
+                {!loading && !loadError && searchQuery && filteredPosts.length === 0 && (
                     <p className="empty-state">* ничего не нашлось</p>
                 )}
             </div>
-            <>
-                <hr className="footer-divider"/>
-                <footer className="site-footer">
-                    <p>design: <a href="https://katyamezentseva.com" target="_blank" rel="noopener noreferrer">katyamezentseva.com</a></p>
-                    <p>founder and chief editor: <a href="https://alialiev.com" target="_blank" rel="noopener noreferrer">alialiev.com</a></p>
-                    <p>tg<a href="https://t.me/podstrochnik_project" target="_blank" rel="noopener noreferrer">@podstrochnik_project</a></p>
-                </footer>
-            </>
+            <hr className="footer-divider"/>
+            <footer className="site-footer">
+                <p>* дизайн — <a href="https://katyamezentseva.com" target="_blank" rel="noopener noreferrer">katyamezentseva.com</a></p>
+                <p>** главный редактор — <a href="https://alialiev.com" target="_blank" rel="noopener noreferrer">alialiev.com</a></p>
+                <p>*** тг: <a href="https://t.me/podstrochnik_project" target="_blank" rel="noopener noreferrer">@podstrochnik_project</a></p>
+            </footer>
 
         </div>
     );
