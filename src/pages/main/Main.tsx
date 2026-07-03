@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { GetPost } from "../../api/Posts";
 import { Post } from "../../entity/Entity";
@@ -60,8 +60,19 @@ export const MainPage: React.FC = () => {
     const [loadError, setLoadError] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
     const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
-    const [filteredPosts, setFilteredPosts] = useState<Post[]>(posts);
     const [isSearchOpen, setIsSearchOpen] = useState(() => !!searchParams.get("search"));
+
+    // useMemo, а не state+effect: фильтрация всегда синхронна с posts/
+    // searchQuery в один и тот же рендер — без промежуточного кадра,
+    // где loading уже false, а filteredPosts ещё не пересчитан (именно
+    // такой кадр давал вспышку «ничего не нашлось» поверх «загружается»).
+    const filteredPosts = useMemo(() => {
+        const q = searchQuery.toLowerCase();
+        return posts.filter(post =>
+            StripHtml(post.title).toLowerCase().includes(q) ||
+            StripHtml(post.author_name).toLowerCase().includes(q)
+        );
+    }, [posts, searchQuery]);
 
     const pageRef = useRef<HTMLDivElement>(null);
     const gridRef = useRef<HTMLDivElement>(null);
@@ -82,9 +93,7 @@ export const MainPage: React.FC = () => {
             .then(data => {
                 postsCache = data;
                 cachePosts(data);
-                const shuffled = shuffle(data);
-                setPosts(shuffled);
-                setFilteredPosts(shuffled);
+                setPosts(shuffle(data));
             })
             .catch(error => {
                 console.error(error);
@@ -92,16 +101,6 @@ export const MainPage: React.FC = () => {
             })
             .finally(() => setLoading(false));
     }, []);
-
-    useEffect(() => {
-        const q = searchQuery.toLowerCase();
-        setFilteredPosts(
-            posts.filter(post =>
-                StripHtml(post.title).toLowerCase().includes(q) ||
-                StripHtml(post.author_name).toLowerCase().includes(q)
-            )
-        );
-    }, [searchQuery, posts]);
 
     useEffect(() => {
         UpdateFavicon("#7a7a26");
@@ -173,11 +172,6 @@ export const MainPage: React.FC = () => {
         if (!cards.length) return;
         entranceDone.current = true;
 
-        // Без глобального ScrollTrigger.refresh() здесь: он пересчитывает
-        // вообще все триггеры на странице и, случившись синхронно в момент,
-        // когда шторка (Preloader/RouteTransition) ещё доигрывает свой
-        // собственный таймлайн, обрывал его на середине. ScrollTrigger.batch
-        // сам меряет позиции при создании — отдельный refresh тут не нужен.
         ScrollTrigger.batch(cards, {
             start: "top 96%",
             once: true,
@@ -193,6 +187,12 @@ export const MainPage: React.FC = () => {
                 });
             },
         });
+
+        // Позиции карточек мерялись, пока часть из них ещё грузила картинки —
+        // без пересчёта batch может решить, что триггер уже пройден, и никогда
+        // не раскрыть карточку. Сигнал сюда приходит через setTimeout (см.
+        // pageReveal.ts), т.е. уже вне цикла эффекта шторки — пересчёт безопасен.
+        requestAnimationFrame(() => ScrollTrigger.refresh());
     }, { scope: gridRef, dependencies: [filteredPosts, revealed] });
 
     // Наклон карточки к курсору (только точный указатель).
@@ -347,7 +347,6 @@ export const MainPage: React.FC = () => {
             setSearchQuery("");
             searchParams.delete("search");
             setSearchParams(searchParams);
-            setFilteredPosts(posts);
         }
     };
 
@@ -394,14 +393,22 @@ export const MainPage: React.FC = () => {
                     <Link to={`/post/${post._id}`} key={post._id} className="post-card"
                           style={{backgroundColor: post.color}}>
                         <div className="slider-container">
-                            <Slider {...sliderSettingsV2Main(post.cards.length, false)}>
-                            {post.cards.map((url, index) => (
-                                    // eslint-disable-next-line
-                                    <img key={index} src={url}
-                                         alt={index === 0 ? StripHtml(post.title) : ""}
-                                         onLoad={scheduleRefresh} />
-                                ))}
-                            </Slider>
+                            {post.cards.length > 1 ? (
+                                <Slider {...sliderSettingsV2Main(post.cards.length, false)}>
+                                {post.cards.map((url, index) => (
+                                        // eslint-disable-next-line
+                                        <img key={index} src={url}
+                                             alt={index === 0 ? StripHtml(post.title) : ""}
+                                             onLoad={scheduleRefresh} />
+                                    ))}
+                                </Slider>
+                            ) : (
+                                // Один кадр — не монтируем react-slick вовсе: на сетке из
+                                // десятков карточек лишний слайдер на мобильном заметно
+                                // тяжелее обычной картинки и тормозит первую отрисовку.
+                                // eslint-disable-next-line
+                                <img src={post.cards[0]} alt={StripHtml(post.title)} onLoad={scheduleRefresh} />
+                            )}
                         </div>
                         <div className="post-info">
                             <h3 dangerouslySetInnerHTML={{ __html: RemoveLinksFromHTML(post.title) }} />

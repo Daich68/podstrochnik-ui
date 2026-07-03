@@ -125,17 +125,16 @@
     margin: var(--space-1) 0;
 }
 
+/* Mobile-first: редактор и дата — просто следующие строки внутри той же
+   панели, без своего позиционирования. На десктопе (см. медиа-запрос
+   ниже) они «вылетают» из потока и занимают отдельные места на полях —
+   но на мобильном одна цельная нахлёстывающаяся панель гораздо надёжнее
+   трёх независимо расположенных плавающих блоков. */
 .marginalia__editor {
-    position: absolute;
-    z-index: 700;
-    right: 2.5vw;
-    top: 50%;
-    transform: translateY(-50%);
-    writing-mode: vertical-rl;
+    margin-top: var(--space-3);
     color: rgba(245, 242, 232, 0.65);
     font-style: italic;
-    letter-spacing: 0.12em;
-    pointer-events: auto;
+    letter-spacing: 0.06em;
 }
 
 .marginalia__editor a {
@@ -143,17 +142,11 @@
 }
 
 .marginalia__date {
-    position: absolute;
-    z-index: 700;
-    bottom: 3vh;
-    left: 50%;
-    transform: translateX(-50%);
+    margin: var(--space-2) 0 0;
     color: rgba(245, 242, 232, 0.55);
     font-style: italic;
     font-size: 0.85rem;
     letter-spacing: 0.08em;
-    margin: 0;
-    pointer-events: auto;
 }
 
 /*MOBILE*/
@@ -168,19 +161,14 @@
         max-width: 90vw;
         max-height: 52vh;
     }
+    /* Один цельный лист снизу — под top-bar (тот сидит на top:3vh),
+       не залезаем на него и не распадаемся на плавающие блоки. */
     .marginalia__links {
-        left: 6vw;
-        right: 6vw;
-        bottom: 9vh;
-        max-height: 45vh;
+        left: var(--space-3);
+        right: var(--space-3);
+        bottom: var(--space-3);
+        max-height: 70vh;
         overflow-y: auto;
-    }
-    .marginalia__editor {
-        writing-mode: horizontal-tb;
-        top: 8vh;
-        right: auto;
-        left: 50%;
-        transform: translateX(-50%);
     }
 }
 
@@ -203,6 +191,29 @@
         max-width: 20vw;
         max-height: 70vh;
         overflow-y: auto;
+    }
+    /* На широком экране редактор и дата «вылетают» из панели и занимают
+       отдельные места на полях — карточка становится книжным разворотом
+       с примечаниями по краям, а не одним сплошным листом. */
+    .marginalia__editor {
+        position: fixed;
+        z-index: 700;
+        right: 2.5vw;
+        top: 50%;
+        transform: translateY(-50%);
+        writing-mode: vertical-rl;
+        margin-top: 0;
+        letter-spacing: 0.12em;
+        pointer-events: auto;
+    }
+    .marginalia__date {
+        position: fixed;
+        z-index: 700;
+        bottom: 3vh;
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0;
+        pointer-events: auto;
     }
 }
 

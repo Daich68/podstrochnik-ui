@@ -295,9 +295,9 @@ export const PostPage: React.FC = () => {
                         <span className="marginalia__label">* примечания</span>
                         <div className="marginalia__rule" aria-hidden="true"></div>
                         <div className="marginalia__body"><InnerDangerous html={post.helpful_links} /></div>
+                        <div className="marginalia__editor"><InnerDangerous html={post.editor_name} /></div>
+                        <p className="marginalia__date">опубликовано: {GetPrettyTimePub({ date: new Date(post.time_publication) })}</p>
                     </aside>
-                    <div className="marginalia__editor"><InnerDangerous html={post.editor_name} /></div>
-                    <p className="marginalia__date">опубликовано: {GetPrettyTimePub({ date: new Date(post.time_publication) })}</p>
                 </div>
             )}
 
