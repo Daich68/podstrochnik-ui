@@ -13,14 +13,14 @@ import useSound from "use-sound";
 // @ts-ignore
 import page from "../../static/page.wav"
 import { gsap, useGSAP, SplitText, CYRILLIC_CHARS } from "../../anim/gsapSetup";
-
-// Кэш постов по id на время сессии: повторное открытие поста
-// рендерится сразу, без ожидания сети.
-const postCache = new Map<string, Post>();
+import { onPageRevealed } from "../../anim/pageReveal";
+import { cachePost, getCachedPost } from "../../api/postCache";
 
 export const PostPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const [post, setPost] = useState<Post | null>(null);
+    // Если пост уже известен из списка на главной — доступен с первого
+    // рендера, без промежуточного "пустого" кадра.
+    const [post, setPost] = useState<Post | null>(() => (id && getCachedPost(id)) || null);
     const [showLinks, setShowLinks] = useState(false);
     const [fullscreenIndex, setFullscreenIndex] = useState<number | null>(null);
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -30,17 +30,23 @@ export const PostPage: React.FC = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const sliderRef = useRef<Slider>(null);
 
+    // Контент монтируется сразу за шторкой — цвет страницы должен
+    // «перекраситься» в цвет поста в момент, когда шторка открывается,
+    // а не быть уже готовым (мгновенным) под ней.
+    const [revealed, setRevealed] = useState(false);
+    useEffect(() => onPageRevealed(() => setRevealed(true)), []);
+
 
     useEffect(() => {
         if (!id) return;
-        const cached = postCache.get(id);
+        const cached = getCachedPost(id);
         if (cached) {
             setPost(cached);
             return;
         }
         GetPostByID(id)
             .then(data => {
-                postCache.set(id, data);
+                cachePost(data);
                 setPost(data);
             })
             .catch(console.error);
@@ -55,6 +61,24 @@ export const PostPage: React.FC = () => {
     useEffect(() => {
         if (post) UpdateFavicon(post.color);
     }, [post]);
+
+    // Перекраска фона в цвет поста — синхронизирована с открытием шторки
+    // (см. onPageRevealed), а не мгновенная подстановка при монтировании.
+    useGSAP(() => {
+        if (!post || !revealed) return;
+        const el = containerRef.current;
+        if (!el) return;
+
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            gsap.set(el, { backgroundColor: post.color });
+            return;
+        }
+
+        gsap.fromTo(el,
+            { backgroundColor: "#7a7a26" },
+            { backgroundColor: post.color, duration: 0.7, ease: "power2.out" }
+        );
+    }, { scope: containerRef, dependencies: [post, revealed] });
 
     // Вход: кнопки топ-бара опускаются, заголовок собирается словами
     // из-под маски, прочерчивается подстрочная линия, под ней проявляется
@@ -222,7 +246,7 @@ export const PostPage: React.FC = () => {
     if (!post) return <p className="post-loading">…</p>;
 
     return (
-        <div className={`post-container ${IsDarkColor(post.color) ? "on-dark" : "on-light"}`} ref={containerRef} style={{ backgroundColor: post.color }}>
+        <div className={`post-container ${IsDarkColor(post.color) ? "on-dark" : "on-light"}`} ref={containerRef}>
             <div className="top-bar">
                 <Link className="helpful-links-btn" style={{textDecoration: "none"}} to={"/"} aria-label="на главную">
                     <span className="btn-mark">←</span>{isMobile ? "" : " на главную"}

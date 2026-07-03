@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { Location, useLocation } from "react-router-dom";
 import { gsap, useGSAP } from "./gsapSetup";
 import { scrollToTop } from "./SmoothScroll";
+import { notifyPageRevealed } from "./pageReveal";
 import "./RouteTransition.css";
 
 const STRIPS = 7;
@@ -41,6 +42,7 @@ export const RouteTransition: React.FC<Props> = ({ children }) => {
             setDisplayLocation(location);
             scrollToTop();
             animating.current = false;
+            notifyPageRevealed();
             return;
         }
 
@@ -75,6 +77,11 @@ export const RouteTransition: React.FC<Props> = ({ children }) => {
         const mark = overlay.querySelector(".route-wipe__mark");
 
         const reveal = contextSafe!(() => {
+            // В момент, когда шторка начинает открываться — новая страница
+            // уже отрисована под ней, самое время впустить её собственные
+            // входные анимации (карточки, перекраска фона и т.п.).
+            notifyPageRevealed();
+
             gsap.timeline({
                 onComplete: () => {
                     animating.current = false;

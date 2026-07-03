@@ -10,7 +10,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.3s ease;
+    /* Цвет теперь анимирует GSAP (см. PostPage.tsx) — CSS-transition
+       убран, чтобы не спорить за то же свойство. */
+    background-color: #7a7a26;
     position: relative;
 }
 

@@ -10,6 +10,8 @@ import { RemoveLinksFromHTML, sliderSettingsV2Main, StripHtml, UpdateFavicon} fr
 import lupaIcon from "../../static/lupa.svg";
 import arrowIcon from "../../static/arrow.svg";
 import { gsap, useGSAP, ScrollTrigger, SplitText, CYRILLIC_CHARS } from "../../anim/gsapSetup";
+import { onPageRevealed } from "../../anim/pageReveal";
+import { cachePosts } from "../../api/postCache";
 
 // Кэш постов на время сессии: возврат на главную рендерится мгновенно,
 // без ожидания сети. Порядок стабилен — перемешивание держится на
@@ -66,12 +68,20 @@ export const MainPage: React.FC = () => {
     const searchInputRef = useRef<HTMLInputElement>(null);
     const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const entranceDone = useRef(false);
+    const primedRef = useRef(false);
+
+    // Контент монтируется сразу за шторкой (см. Preloader/RouteTransition),
+    // поэтому входные анимации должны ждать этот сигнал — иначе они целиком
+    // проигрываются, пока шторка ещё закрыта, и до зрителя не долетают.
+    const [revealed, setRevealed] = useState(false);
+    useEffect(() => onPageRevealed(() => setRevealed(true)), []);
 
     useEffect(() => {
         if (postsCache) return;
         GetPost()
             .then(data => {
                 postsCache = data;
+                cachePosts(data);
                 const shuffled = shuffle(data);
                 setPosts(shuffled);
                 setFilteredPosts(shuffled);
@@ -99,7 +109,9 @@ export const MainPage: React.FC = () => {
 
     // Заголовок: буквы поднимаются из-под «подстрочной» линии,
     // затем линия прочерчивается и под ней проявляется глосс-транслит.
+    // Ждём открытия шторки — иначе анимация проиграется впустую за ней.
     useGSAP(() => {
+        if (!revealed) return;
         const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         if (reduced) return;
 
@@ -129,22 +141,23 @@ export const MainPage: React.FC = () => {
             }, "-=0.3");
 
         return () => split.revert();
-    }, { scope: pageRef });
+    }, { scope: pageRef, dependencies: [revealed] });
 
-    // Карточки: «отпечатываются» построчно — раскрытие сверху вниз
-    // с лёгким поворотом. Только при первом наполнении сетки; фильтрация
-    // поиском карточки не переигрывает.
+    // Карточки — вход в два шага:
+    // 1) «примирование» — прячем карточки в клип сразу, как только они
+    //    попали в DOM (ещё за закрытой шторкой, зритель этого не видит);
+    // 2) «раскрытие» — стартует только по сигналу открытия шторки, чтобы
+    //    печатный жест реально был виден, а не проигрывался вхолостую.
     useGSAP(() => {
-        if (entranceDone.current) return;
+        if (primedRef.current) return;
         const cards = gsap.utils.toArray<HTMLElement>(".post-card");
         if (!cards.length) return;
+        primedRef.current = true;
 
-        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        if (reduced) {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
             entranceDone.current = true;
             return;
         }
-        entranceDone.current = true;
 
         gsap.set(cards, {
             clipPath: "inset(0% 0% 100% 0%)",
@@ -152,7 +165,19 @@ export const MainPage: React.FC = () => {
             rotation: () => gsap.utils.random(-1.2, 1.2),
             willChange: "transform, clip-path",
         });
+    }, { scope: gridRef, dependencies: [filteredPosts] });
 
+    useGSAP(() => {
+        if (entranceDone.current || !revealed) return;
+        const cards = gsap.utils.toArray<HTMLElement>(".post-card");
+        if (!cards.length) return;
+        entranceDone.current = true;
+
+        // Без глобального ScrollTrigger.refresh() здесь: он пересчитывает
+        // вообще все триггеры на странице и, случившись синхронно в момент,
+        // когда шторка (Preloader/RouteTransition) ещё доигрывает свой
+        // собственный таймлайн, обрывал его на середине. ScrollTrigger.batch
+        // сам меряет позиции при создании — отдельный refresh тут не нужен.
         ScrollTrigger.batch(cards, {
             start: "top 96%",
             once: true,
@@ -168,9 +193,7 @@ export const MainPage: React.FC = () => {
                 });
             },
         });
-
-        ScrollTrigger.refresh();
-    }, { scope: gridRef, dependencies: [filteredPosts] });
+    }, { scope: gridRef, dependencies: [filteredPosts, revealed] });
 
     // Наклон карточки к курсору (только точный указатель).
     useGSAP((context, contextSafe) => {

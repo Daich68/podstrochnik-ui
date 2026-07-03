@@ -1,5 +1,6 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { gsap, useGSAP, CYRILLIC_CHARS } from "./gsapSetup";
+import { notifyPageRevealed } from "./pageReveal";
 import "./Preloader.css";
 
 type Phase = "loading" | "revealing" | "done";
@@ -13,6 +14,14 @@ export const Preloader: React.FC<{ children: React.ReactNode }> = ({ children })
         window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "done" : "loading"
     );
     const overlayRef = useRef<HTMLDivElement>(null);
+
+    // При reduced-motion шторки вообще не будет — сигнал «страница
+    // открыта» всё равно должен прийти, иначе входные анимации
+    // карточек/цвета навсегда останутся в ожидании.
+    useEffect(() => {
+        if (phase === "done") notifyPageRevealed();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useGSAP(() => {
         if (phase !== "loading") return;
@@ -71,6 +80,11 @@ export const Preloader: React.FC<{ children: React.ReactNode }> = ({ children })
     useGSAP(() => {
         if (phase !== "revealing") return;
         const overlay = overlayRef.current!;
+
+        // Публикуем сигнал в момент, когда шторка начинает открываться —
+        // карточки/цвет успевают проявиться одновременно со снятием шторки,
+        // а не спустя кадр после того, как она уже полностью исчезла.
+        notifyPageRevealed();
 
         gsap.timeline({ onComplete: () => setPhase("done") })
             .to(".preloader__counter", { autoAlpha: 0, y: -10, duration: 0.25, ease: "power2.in" })
