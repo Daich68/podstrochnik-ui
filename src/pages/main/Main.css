@@ -54,7 +54,6 @@
     .site-title{
         h1 {
             padding-top: 1rem;
-            font-size: 1.5rem;
         }
     }
     /* Пока картинка не догрузилась, карточка — не тонкая полоска,
@@ -86,11 +85,6 @@
 
 /*DESC*/
 @media (min-width: 700px) {
-    .site-title{
-        h1 {
-            font-size: 3rem;
-        }
-    }
     .search-icon {
         img {
             width: auto;
@@ -217,6 +211,11 @@
     h1 {
         margin: 0;
         white-space: nowrap;
+        /* Флюидный размер вместо ступенек 1.5rem/3rem по брейкпоинтам:
+           заголовок плавно масштабируется под ширину вьюпорта и не
+           вылезает за край на узких телефонах (в паре с nowrap ступеньки
+           давали overflow — 1.5rem был всё ещё широковат для iPhone SE). */
+        font-size: clamp(1.3rem, 1rem + 4.2vw, 3rem);
     }
 }
 
