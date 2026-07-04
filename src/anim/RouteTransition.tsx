@@ -38,7 +38,10 @@ export const RouteTransition: React.FC<Props> = ({ children }) => {
         const mark = overlay.querySelector(".route-wipe__mark");
         const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-        if (reduced) {
+        // document.hidden: в фоновой вкладке rAF остановлен — GSAP-таймлайн
+        // не сыграет и подмена страницы внутри него не случится никогда.
+        // Меняем страницу мгновенно, анимацию всё равно никто не видит.
+        if (reduced || document.hidden) {
             setDisplayLocation(location);
             scrollToTop();
             animating.current = false;
@@ -77,6 +80,16 @@ export const RouteTransition: React.FC<Props> = ({ children }) => {
         const mark = overlay.querySelector(".route-wipe__mark");
 
         const reveal = contextSafe!(() => {
+            // Вкладка ушла в фон, пока страница менялась под шторкой:
+            // rAF стоит, таймлайн раскрытия не сыграет — снимаем шторку
+            // мгновенно, без анимации.
+            if (document.hidden) {
+                notifyPageRevealed();
+                gsap.set(overlay, { pointerEvents: "none", visibility: "hidden" });
+                animating.current = false;
+                return;
+            }
+
             // В момент, когда шторка начинает открываться — новая страница
             // уже отрисована под ней, самое время впустить её собственные
             // входные анимации (карточки, перекраска фона и т.п.).

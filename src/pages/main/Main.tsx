@@ -6,7 +6,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./Main.css";
-import { RemoveLinksFromHTML, sliderSettingsV2Main, StripHtml, UpdateFavicon} from "../../utils/Style";
+import { IsDarkColor, RemoveLinksFromHTML, sliderSettingsV2Main, StripHtml, UpdateFavicon} from "../../utils/Style";
 import lupaIcon from "../../static/lupa.svg";
 import arrowIcon from "../../static/arrow.svg";
 import { gsap, useGSAP, ScrollTrigger, SplitText, CYRILLIC_CHARS } from "../../anim/gsapSetup";
@@ -390,7 +390,8 @@ export const MainPage: React.FC = () => {
             </div>
             <div className="masonry-grid" ref={gridRef}>
                 {filteredPosts.map(post => (
-                    <Link to={`/post/${post._id}`} key={post._id} className="post-card"
+                    <Link to={`/post/${post._id}`} key={post._id}
+                          className={`post-card ${IsDarkColor(post.color) ? "card-dark" : "card-light"}`}
                           style={{backgroundColor: post.color}}>
                         <div className="slider-container">
                             {post.cards.length > 1 ? (
@@ -416,16 +417,18 @@ export const MainPage: React.FC = () => {
                         </div>
                     </Link>
                 ))}
-                {loading && (
-                    <p className="empty-state">* загружается архив</p>
-                )}
-                {loadError && (
-                    <p className="empty-state">* не получилось загрузить архив — попробуйте обновить страницу</p>
-                )}
-                {!loading && !loadError && searchQuery && filteredPosts.length === 0 && (
-                    <p className="empty-state">* ничего не нашлось</p>
-                )}
             </div>
+            {/* Статусы — вне masonry-сетки: column-count разрывает
+                строку на колонки, на мобильном текст расползался на куски */}
+            {loading && (
+                <p className="empty-state">* загружается архив</p>
+            )}
+            {loadError && (
+                <p className="empty-state">* не получилось загрузить архив — попробуйте обновить страницу</p>
+            )}
+            {!loading && !loadError && searchQuery && filteredPosts.length === 0 && (
+                <p className="empty-state">* ничего не нашлось</p>
+            )}
             <hr className="footer-divider"/>
             <footer className="site-footer">
                 <p>* дизайн — <a href="https://katyamezentseva.com" target="_blank" rel="noopener noreferrer">katyamezentseva.com</a></p>

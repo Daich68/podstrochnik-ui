@@ -1,8 +1,23 @@
+/* Mobile-first: на телефоне — одна карточка во всю ширину (изображение
+   читается, подпись-подстрочник дышит), на широких телефонах/планшетах —
+   две, на десктопе — прежние четыре. */
 .masonry-grid {
-    column-count: 2;
+    column-count: 1;
     column-gap: var(--space-4);
     padding: var(--space-5);
     perspective: 1100px;
+}
+
+@media (min-width: 560px) {
+    .masonry-grid {
+        column-count: 2;
+    }
+}
+
+@media (min-width: 900px) {
+    .masonry-grid {
+        column-count: 4;
+    }
 }
 
 .search-icon {
@@ -29,11 +44,24 @@
 
 /*MOBILE*/
 @media (max-width: 700px) {
+    /* Открытый поиск не влезает в одну строку с заголовком на узких
+       экранах — переносим его на следующую строку, а не выдавливаем
+       за край вьюпорта. */
+    .site-title {
+        flex-wrap: wrap;
+        row-gap: var(--space-2);
+    }
     .site-title{
         h1 {
             padding-top: 1rem;
             font-size: 1.5rem;
         }
+    }
+    /* Пока картинка не догрузилась, карточка — не тонкая полоска,
+       а осмысленный цветовой блок-плейсхолдер (в одну колонку
+       карточка во всю ширину — и заглушка соразмерно выше). */
+    .slider-container {
+        min-height: 180px;
     }
     .search-icon {
         img {
@@ -58,9 +86,6 @@
 
 /*DESC*/
 @media (min-width: 700px) {
-    .masonry-grid{
-        column-count: 4;
-    }
     .site-title{
         h1 {
             font-size: 3rem;
@@ -149,15 +174,36 @@
     transform: translateY(0);
 }
 
-/* На тач-устройствах hover нет — подпись видна всегда */
+/* На тач-устройствах hover нет — подпись становится строкой ПОД
+   изображением (буквально подстрочник), а не оверлеем поверх него:
+   оверлейная плашка на узкой карточке накрывала пол-изображения. */
 @media (hover: none) {
     .post-info {
+        position: static;
         clip-path: none;
-        background: rgba(18, 18, 11, 0.6);
+        background: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.3);
+        padding: var(--space-2) var(--space-3) var(--space-3);
     }
     .post-info h3,
     .post-info p {
         transform: none;
+    }
+    .post-info h3 {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: normal;
+    }
+    .post-info p {
+        margin: 2px 0 0;
+        font-size: 0.8rem;
+        font-style: italic;
+        opacity: 0.8;
+    }
+    /* Контраст подписи — по яркости цвета карточки */
+    .post-card.card-light .post-info {
+        color: rgba(20, 20, 12, 0.9);
+        border-top-color: rgba(0, 0, 0, 0.25);
     }
 }
 
@@ -197,10 +243,12 @@
     visibility: hidden;
 }
 
+/* Статусы живут вне masonry-сетки — свои поля в створ сетки */
 .empty-state {
     color: rgba(255, 255, 255, 0.65);
     font-style: italic;
-    padding: var(--space-4) 0;
+    padding: 0 var(--space-5) var(--space-4);
+    margin: 0;
 }
 
 /* Счётчик результатов поиска — сноска на полях, свой gap не нужен —
@@ -288,7 +336,8 @@
 .site-footer {
     text-align: left;
     color: rgba(255, 255, 255, 0.7);
-    padding: 0 var(--space-5) var(--space-6);
+    /* Нижний отступ учитывает home-индикатор iPhone (safe area) */
+    padding: 0 var(--space-5) calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
 }
 
 .site-footer a {

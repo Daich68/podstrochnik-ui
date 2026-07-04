@@ -29,7 +29,8 @@
 
 .top-bar {
     position: absolute;
-    top: 3vh;
+    /* Не залезаем под чёлку/статус-бар на iPhone */
+    top: calc(3vh + env(safe-area-inset-top, 0px));
     width: 90%;
     display: flex;
     justify-content: space-between;
@@ -125,16 +126,17 @@
     margin: var(--space-1) 0;
 }
 
-/* Mobile-first: редактор и дата — просто следующие строки внутри той же
-   панели, без своего позиционирования. На десктопе (см. медиа-запрос
-   ниже) они «вылетают» из потока и занимают отдельные места на полях —
-   но на мобильном одна цельная нахлёстывающаяся панель гораздо надёжнее
-   трёх независимо расположенных плавающих блоков. */
 .marginalia__editor {
-    margin-top: var(--space-3);
+    position: absolute;
+    z-index: 700;
+    right: 2.5vw;
+    top: 50%;
+    transform: translateY(-50%);
+    writing-mode: vertical-rl;
     color: rgba(245, 242, 232, 0.65);
     font-style: italic;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.12em;
+    pointer-events: auto;
 }
 
 .marginalia__editor a {
@@ -142,11 +144,17 @@
 }
 
 .marginalia__date {
-    margin: var(--space-2) 0 0;
+    position: absolute;
+    z-index: 700;
+    bottom: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
     color: rgba(245, 242, 232, 0.55);
     font-style: italic;
     font-size: 0.85rem;
     letter-spacing: 0.08em;
+    margin: 0;
+    pointer-events: auto;
 }
 
 /*MOBILE*/
@@ -161,14 +169,34 @@
         max-width: 90vw;
         max-height: 52vh;
     }
-    /* Один цельный лист снизу — под top-bar (тот сидит на top:3vh),
-       не залезаем на него и не распадаемся на плавающие блоки. */
+    /* КЛЮЧЕВОЕ: .marginalia (z:500) ниже .post-page-inner (z:600) —
+       на десктопе блоки не пересекаются пространственно, а на узком
+       экране разворот рисовался ПОВЕРХ панели примечаний, получалась
+       каша. На мобильном поднимаем весь слой выше страницы: вуаль
+       честно затемняет разворот, примечания читаемы. ПК не трогаем. */
+    .marginalia {
+        z-index: 800;
+    }
     .marginalia__links {
         left: var(--space-3);
         right: var(--space-3);
-        bottom: var(--space-3);
-        max-height: 70vh;
+        bottom: calc(9vh + env(safe-area-inset-bottom, 0px));
+        max-height: 45vh;
         overflow-y: auto;
+    }
+    .marginalia__editor {
+        writing-mode: horizontal-tb;
+        top: calc(8vh + env(safe-area-inset-top, 0px));
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+        width: max-content;
+        max-width: 86vw;
+    }
+    .marginalia__date {
+        bottom: calc(3vh + env(safe-area-inset-bottom, 0px));
+        width: max-content;
+        max-width: 86vw;
     }
 }
 
@@ -191,29 +219,6 @@
         max-width: 20vw;
         max-height: 70vh;
         overflow-y: auto;
-    }
-    /* На широком экране редактор и дата «вылетают» из панели и занимают
-       отдельные места на полях — карточка становится книжным разворотом
-       с примечаниями по краям, а не одним сплошным листом. */
-    .marginalia__editor {
-        position: fixed;
-        z-index: 700;
-        right: 2.5vw;
-        top: 50%;
-        transform: translateY(-50%);
-        writing-mode: vertical-rl;
-        margin-top: 0;
-        letter-spacing: 0.12em;
-        pointer-events: auto;
-    }
-    .marginalia__date {
-        position: fixed;
-        z-index: 700;
-        bottom: 3vh;
-        left: 50%;
-        transform: translateX(-50%);
-        margin: 0;
-        pointer-events: auto;
     }
 }
 
@@ -302,7 +307,7 @@
 
 .fullscreen-counter {
     position: absolute;
-    bottom: 4vh;
+    bottom: calc(4vh + env(safe-area-inset-bottom, 0px));
     left: 50%;
     transform: translateX(-50%);
     color: rgba(245, 242, 232, 0.75);
@@ -346,7 +351,7 @@
 }
 
 .close-btn {
-    top: 12px;
+    top: calc(12px + env(safe-area-inset-top, 0px));
     right: 12px;
 }
 

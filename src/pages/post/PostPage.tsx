@@ -29,6 +29,7 @@ export const PostPage: React.FC = () => {
 
     const containerRef = useRef<HTMLDivElement>(null);
     const sliderRef = useRef<Slider>(null);
+    const touchStartX = useRef<number | null>(null);
 
     // Контент монтируется сразу за шторкой — цвет страницы должен
     // «перекраситься» в цвет поста в момент, когда шторка открывается,
@@ -295,14 +296,23 @@ export const PostPage: React.FC = () => {
                         <span className="marginalia__label">* примечания</span>
                         <div className="marginalia__rule" aria-hidden="true"></div>
                         <div className="marginalia__body"><InnerDangerous html={post.helpful_links} /></div>
-                        <div className="marginalia__editor"><InnerDangerous html={post.editor_name} /></div>
-                        <p className="marginalia__date">опубликовано: {GetPrettyTimePub({ date: new Date(post.time_publication) })}</p>
                     </aside>
+                    <div className="marginalia__editor"><InnerDangerous html={post.editor_name} /></div>
+                    <p className="marginalia__date">опубликовано: {GetPrettyTimePub({ date: new Date(post.time_publication) })}</p>
                 </div>
             )}
 
             {fullscreenIndex !== null && (
-                <div className="fullscreen-overlay">
+                <div className="fullscreen-overlay"
+                     onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+                     onTouchEnd={(e) => {
+                         // Свайп-листание на таче: стрелки по краям экрана —
+                         // не тот жест, который ждёшь от полноэкранной галереи
+                         if (touchStartX.current === null || post.cards.length < 2) return;
+                         const dx = e.changedTouches[0].clientX - touchStartX.current;
+                         touchStartX.current = null;
+                         if (Math.abs(dx) > 40) (dx < 0 ? nextImage() : prevImage());
+                     }}>
                     <button type="button" className="close-btn" onClick={closeFullscreen} aria-label="закрыть полноэкранный режим">×</button>
                     {post.cards.length > 1 && <button type="button" className="prev-btn" onClick={prevImage} aria-label="предыдущий лист">‹</button>}
                     <img src={post.cards[fullscreenIndex]} alt={StripHtml(post.title)} className="fullscreen-image" />

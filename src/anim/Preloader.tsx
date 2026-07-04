@@ -41,15 +41,18 @@ export const Preloader: React.FC<{ children: React.ReactNode }> = ({ children })
         const ruleTo = gsap.quickTo(rule, "scaleX", { duration: 0.3, ease: "power2.out" });
 
         let progress = 0;
-        let pageLoaded = document.readyState === "complete";
+        // Ждём готовности ПРИЛОЖЕНИЯ (DOM разобран, бандл исполняется),
+        // а не window.load: тот на мобильной сети приходит только после
+        // загрузки всех картинок сетки, и шторка висела на 90% до 6с.
+        let pageLoaded = document.readyState !== "loading";
         const onLoad = () => { pageLoaded = true; };
-        window.addEventListener("load", onLoad);
+        document.addEventListener("DOMContentLoaded", onLoad);
 
         const started = performance.now();
         const MIN_TIME = 1400;
-        // Аварийный предел: даже если load так и не пришёл,
+        // Аварийный предел: даже если DOMContentLoaded так и не пришёл,
         // шторка не держит пользователя дольше этого.
-        const MAX_TIME = 6000;
+        const MAX_TIME = 3500;
 
         // Прогресс считается от прошедшего времени, а не от числа тиков:
         // в затроттленной фоновой вкладке тик просто «догоняет» значение.
@@ -73,13 +76,22 @@ export const Preloader: React.FC<{ children: React.ReactNode }> = ({ children })
 
         return () => {
             window.clearInterval(tick);
-            window.removeEventListener("load", onLoad);
+            document.removeEventListener("DOMContentLoaded", onLoad);
         };
     }, { scope: overlayRef, dependencies: [phase] });
 
     useGSAP(() => {
         if (phase !== "revealing") return;
         const overlay = overlayRef.current!;
+
+        // Вкладка в фоне (открыли ссылку в новой вкладке, свернули браузер
+        // во время загрузки): rAF остановлен, GSAP-таймлайн не сыграет
+        // никогда — снимаем шторку без анимации, её всё равно никто не видит.
+        if (document.hidden) {
+            notifyPageRevealed();
+            setPhase("done");
+            return;
+        }
 
         // Публикуем сигнал в момент, когда шторка начинает открываться —
         // карточки/цвет успевают проявиться одновременно со снятием шторки,
