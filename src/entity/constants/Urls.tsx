@@ -1,4 +1,4 @@
-const BaseUrl: string = "https://api.podstrochnik.ru";
+const BaseUrl: string = "https://pds-api.alialiev.com";
 const auth: string = "/authenticated"
 export const URLs = {
     Login: BaseUrl + "/login",
