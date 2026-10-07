@@ -1,23 +1,15 @@
-# Use an official Node.js runtime as the base image
-FROM node:20
+FROM node:20-alpine
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy package.json and yarn.lock to the working directory
-COPY package.json yarn.lock ./
+COPY package*.json ./
+RUN npm install
 
-# Install dependencies using Yarn
-RUN yarn install
-
-# Copy all app files to the working directory
 COPY . .
 
-# Build the React app for production
-RUN yarn build
+RUN npm run build
 
-# Install a simple static file server to serve the build files
-RUN yarn global add serve
+RUN npm install -g serve
 
 # Expose the port for your app
 EXPOSE 3003

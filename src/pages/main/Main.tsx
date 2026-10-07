@@ -432,7 +432,7 @@ export const MainPage: React.FC = () => {
             <hr className="footer-divider"/>
             <footer className="site-footer">
                 <p>* дизайн — <a href="https://katyamezentseva.com" target="_blank" rel="noopener noreferrer">katyamezentseva.com</a></p>
-                <p>** главный редактор — <a href="https://alialiev.com" target="_blank" rel="noopener noreferrer">alialiev.com</a></p>
+                <p>** основатель проекта — <a href="https://alialiev.com" target="_blank" rel="noopener noreferrer">alialiev.com</a></p>
                 <p>*** тг: <a href="https://t.me/podstrochnik_project" target="_blank" rel="noopener noreferrer">@podstrochnik_project</a></p>
             </footer>
 
